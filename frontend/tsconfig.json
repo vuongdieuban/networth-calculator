@@ -1,11 +1,12 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "strictPropertyInitialization": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
@@ -16,11 +17,12 @@
     "importHelpers": true,
     "target": "es2017",
     "module": "es2020",
-    "lib": [
-      "es2018",
-      "dom"
-    ]
+    "lib": ["es2018", "dom"],
+    "types": ["jest", "node"],
+    "emitDecoratorMetadata": true
   },
+  "files": ["src/test.ts", "src/polyfills.ts"],
+  "include": ["src/**/*.spec.ts", "src/**/*.d.ts"],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
