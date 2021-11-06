@@ -6,4 +6,6 @@ export const moneyColumnOption: Partial<ColumnOptions> = {
   precision: 14,
   scale: 2,
   transformer: numberTransformer,
+  nullable: false,
+  default: 0,
 };

@@ -1,9 +1,14 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { AbstractEntity } from './abstract.entity';
 import { moneyColumnOption } from './money-column-option';
+import { UserEntity } from './user.entity';
 
 @Entity()
 export class AssetEntity extends AbstractEntity {
+  @OneToOne(() => UserEntity)
+  @JoinColumn()
+  user: UserEntity;
+
   @Column({
     name: 'chequing',
     ...moneyColumnOption,

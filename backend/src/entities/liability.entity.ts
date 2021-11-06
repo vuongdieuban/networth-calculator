@@ -1,9 +1,14 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { AbstractEntity } from './abstract.entity';
 import { moneyColumnOption } from './money-column-option';
+import { UserEntity } from './user.entity';
 
 @Entity()
 export class LiabilityEntity extends AbstractEntity {
+  @OneToOne(() => UserEntity)
+  @JoinColumn()
+  user: UserEntity;
+
   @Column({
     name: 'credit_card_1',
     ...moneyColumnOption,
