@@ -18,7 +18,8 @@ export const ormconfig: ConnectionOptions = {
   cli: {
     migrationsDir: 'src/migrations',
   },
-  synchronize: false,
-  migrationsRun: false,
+  synchronize: process.env.NODE_ENV === 'development', // false in prod
+  dropSchema: process.env.NODE_ENV === 'development', // false in prod
+  migrationsRun: true,
   logging: ['schema', 'query', 'error'],
 };
