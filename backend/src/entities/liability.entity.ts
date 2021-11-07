@@ -10,38 +10,86 @@ export class LiabilityEntity extends AbstractEntity {
   user: UserEntity;
 
   @Column({
-    name: 'credit_card_1',
     ...moneyColumnOption,
+    name: 'credit_card_1',
   })
   creditCard1: number;
 
   @Column({
-    name: 'credit_card_2',
     ...moneyColumnOption,
+    name: 'credit_card_1_monthly_payment',
+    nullable: false,
+    default: 200,
+  })
+  creditCard1MonthlyPayment: number;
+
+  @Column({
+    ...moneyColumnOption,
+    name: 'credit_card_2',
   })
   creditCard2: number;
 
   @Column({
-    name: 'mortgage_1',
     ...moneyColumnOption,
+    name: 'credit_card_2_monthly_payment',
+    nullable: false,
+    default: 150,
+  })
+  creditCard2MonthlyPayment: number;
+
+  @Column({
+    ...moneyColumnOption,
+    name: 'mortgage_1',
   })
   mortgage1: number;
 
   @Column({
-    name: 'mortgage_2',
     ...moneyColumnOption,
+    name: 'mortgage_1_monthly_payment',
+    nullable: false,
+    default: 2000,
+  })
+  mortgage1MonthlyPayment: number;
+
+  @Column({
+    ...moneyColumnOption,
+    name: 'mortgage_2',
   })
   mortgage2: number;
 
   @Column({
-    name: 'line_of_credit',
     ...moneyColumnOption,
+    name: 'mortgage_2_monthly_payment',
+    nullable: false,
+    default: 3500,
+  })
+  mortgage2MonthlyPayment: number;
+
+  @Column({
+    ...moneyColumnOption,
+    name: 'line_of_credit',
   })
   lineOfCredit: number;
 
   @Column({
-    name: 'investment_loan',
     ...moneyColumnOption,
+    name: 'line_of_credit_monthly_payment',
+    nullable: false,
+    default: 500,
+  })
+  lineOfCreditMonthlyPayment: number;
+
+  @Column({
+    ...moneyColumnOption,
+    name: 'investment_loan',
   })
   investmentLoan: number;
+
+  @Column({
+    ...moneyColumnOption,
+    name: 'investment_loan_monthly_payment',
+    nullable: false,
+    default: 700,
+  })
+  investmentLoanMonthlyPayment: number;
 }

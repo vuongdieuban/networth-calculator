@@ -10,74 +10,74 @@ export class AssetEntity extends AbstractEntity {
   user: UserEntity;
 
   @Column({
-    name: 'chequing',
     ...moneyColumnOption,
+    name: 'chequing',
   })
   chequing: number;
 
   @Column({
-    name: 'savings_for_taxes',
     ...moneyColumnOption,
+    name: 'savings_for_taxes',
   })
   savingsForTaxes: number;
 
   @Column({
-    name: 'rainy_day_fund',
     ...moneyColumnOption,
+    name: 'rainy_day_fund',
   })
   rainyDayFund: number;
 
   @Column({
-    name: 'savings_for_fun',
     ...moneyColumnOption,
+    name: 'savings_for_fun',
   })
   savingsForFun: number;
 
   @Column({
-    name: 'savings_for_travel',
     ...moneyColumnOption,
+    name: 'savings_for_travel',
   })
   savingsForTravel: number;
 
   @Column({
-    name: 'savings_for_personal_development',
     ...moneyColumnOption,
+    name: 'savings_for_personal_development',
   })
   savingsForPersonalDevelopment: number;
 
   @Column({
-    name: 'investment_1',
     ...moneyColumnOption,
+    name: 'investment_1',
   })
   investment1: number;
 
   @Column({
-    name: 'investment_2',
     ...moneyColumnOption,
+    name: 'investment_2',
   })
   investment2: number;
 
   @Column({
-    name: 'investment_3',
     ...moneyColumnOption,
+    name: 'investment_3',
   })
   investment3: number;
 
   @Column({
-    name: 'primary_home',
     ...moneyColumnOption,
+    name: 'primary_home',
   })
   primaryHome: number;
 
   @Column({
-    name: 'secondary_home',
     ...moneyColumnOption,
+    name: 'secondary_home',
   })
   secondaryHome: number;
 
   @Column({
-    name: 'other',
     ...moneyColumnOption,
+    name: 'other',
   })
   other: number;
 }
