@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TerminusModule } from '@nestjs/terminus';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TransformInterceptor } from './interceptors/transform.interceptor';
+import { TransformInterceptor } from './shared/interceptors/transform.interceptor';
 import { HealthController } from './health/health.controller';
 import { HttpModule } from '@nestjs/axios';
 import { NetworthController } from './networth/networth.controller';

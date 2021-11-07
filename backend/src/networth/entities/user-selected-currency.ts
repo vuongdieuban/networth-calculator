@@ -1,7 +1,7 @@
-import { CurrencyType } from 'src/constants/currency-type.enum';
+import { AbstractEntity } from 'src/shared/abstract.entity';
+import { CurrencyType } from 'src/shared/constants/currency-type.enum';
+import { UserEntity } from 'src/user/entities/user.entity';
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
-import { AbstractEntity } from './abstract.entity';
-import { UserEntity } from './user.entity';
 
 @Entity()
 export class UserSelectedCurrency extends AbstractEntity {
