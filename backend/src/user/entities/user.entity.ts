@@ -8,6 +8,6 @@ export class UserEntity extends AbstractEntity {
   username: string;
 
   @Exclude()
-  @Column({ name: 'password', type: 'varchar', length: 32 })
-  password: string;
+  @Column({ name: 'hashed_password', type: 'varchar', length: 256 })
+  hashedPassword: string;
 }
