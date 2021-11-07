@@ -12,11 +12,27 @@ export class UserService {
     private readonly hashingService: HashingService,
   ) {}
 
+  public async getOrCreateUser(username: string, password: string): Promise<UserEntity> {
+    const user = await this.getUserByUserName(username);
+    console.log('DB USR', user);
+    if (!user) {
+      return this.createUser(username, password);
+    }
+    return user;
+  }
+
+  public async getUserByUserName(username: string): Promise<UserEntity | undefined> {
+    return this.userRepository.findOne({
+      username,
+    });
+  }
+
   public async createUser(username: string, password: string): Promise<UserEntity> {
     const hashedPassword = await this.hashingService.hashPassword(password);
-    return this.userRepository.create({
+    const user = this.userRepository.create({
       username,
       hashedPassword,
     });
+    return this.userRepository.save(user);
   }
 }
