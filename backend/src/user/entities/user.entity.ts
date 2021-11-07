@@ -4,10 +4,10 @@ import { AbstractEntity } from '../../shared/abstract.entity';
 
 @Entity()
 export class UserEntity extends AbstractEntity {
-  @Column({ unique: true, name: 'email' })
-  email: string;
+  @Column({ unique: true, name: 'username', type: 'varchar', length: 32 })
+  username: string;
 
   @Exclude()
-  @Column({ name: 'password', type: 'varchar', length: 64 })
+  @Column({ name: 'password', type: 'varchar', length: 32 })
   password: string;
 }
