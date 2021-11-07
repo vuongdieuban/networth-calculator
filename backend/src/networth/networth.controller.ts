@@ -1,12 +1,10 @@
-import { BadRequestException, Controller, Get, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ValidatedUser } from 'src/auth/interfaces/validated-user';
-import { CreateAssetLiabilityResponseDto } from './dtos/create-asset-liability-response.dto';
-import { GetAssetLiabilityResponseDto } from './dtos/get-asset-liability-response.dto';
-import { AssetEntity } from './entities/asset.entity';
-import { LiabilityEntity } from './entities/liability.entity';
-import { NetworthService, NetworthValues } from './services/networth.service';
+import { CalculateNetworthRequestDto } from './dtos/calculate-networth-request.dto';
+import { NetworthViewResponseDto } from './dtos/networth-view-response';
+import { NetworthProfile, NetworthService } from './services/networth/networth.service';
 
 // Auth Guard will protect these endpoints and validate the token
 // Once valid it will reach here and also has injected req.user into Request object
@@ -16,52 +14,49 @@ export class NetworthController {
   constructor(private readonly networthService: NetworthService) {}
 
   @Get('/')
-  public async getLiabilityAndAssetProfile(
-    @Req() req: Request,
-  ): Promise<GetAssetLiabilityResponseDto> {
+  public async getNetworthProfile(@Req() req: Request): Promise<NetworthViewResponseDto> {
     const userId = this.extractUserIdFromRequest(req);
-    const [asset, liability] = await this.networthService.getLiabilityAndAssetProfile(userId);
 
-    if (!(asset && liability)) {
+    const profile = await this.networthService.getNetworthProfile(userId);
+    if (!profile) {
       throw new BadRequestException('This user does not have asset or liability profile created');
     }
-    const networthValues = this.networthService.calculateNetworthValues(asset, liability);
-
-    return this.formatGetAssetLiabilityResponse(networthValues, asset, liability);
+    return this.formatNetworthProfileToViewResponse(profile);
   }
 
-  @Post('/')
+  @Post('/create')
   public async createInitialAssetAndLiability(
     @Req() req: Request,
-  ): Promise<CreateAssetLiabilityResponseDto> {
+  ): Promise<NetworthViewResponseDto> {
     const userId = this.extractUserIdFromRequest(req);
-    const [asset, liability] = await this.networthService.createInitialAssetAndLiability(userId);
-    return {
-      userId,
-      assetId: asset.id,
-      liabilityId: liability.id,
-    };
+    // TODO: create user selected currency profile
+    const profile = await this.networthService.createInitialNetworthProfile(userId);
+    return this.formatNetworthProfileToViewResponse(profile);
   }
 
-  @Put('/liability')
-  public async updateLiability() {}
-
-  @Put('/asset')
-  public async updateAsset() {}
-
-  @Put('/currency')
-  public async updateCurrency() {}
+  @Post('/calculate')
+  public async calculateAndUpdateNetworthWithNewRate(
+    @Req() req: Request,
+    @Body() payload: CalculateNetworthRequestDto,
+  ) {
+    const userId = this.extractUserIdFromRequest(req);
+    const updatedProfile = await this.networthService.calculateAndUpdateNetworthWithNewRate(
+      userId,
+      payload,
+    );
+    if (!updatedProfile) {
+      throw new BadRequestException('This user does not have asset or liability profile created');
+    }
+    return this.formatNetworthProfileToViewResponse(updatedProfile);
+  }
 
   private extractUserIdFromRequest(req: Request) {
     const user = req.user as ValidatedUser;
     return user.userId;
   }
 
-  private formatGetAssetLiabilityResponse(
-    networthValues: NetworthValues,
-    asset: AssetEntity,
-    liability: LiabilityEntity,
-  ): GetAssetLiabilityResponseDto {
+  private formatNetworthProfileToViewResponse(profile: NetworthProfile): NetworthViewResponseDto {
+    const { networthValues, asset, liability } = profile;
     const { totalAssets, totalLiabilities, totalNetworth } = networthValues;
 
     return {

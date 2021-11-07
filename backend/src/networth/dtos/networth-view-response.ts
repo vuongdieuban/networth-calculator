@@ -1,4 +1,4 @@
-export class GetAssetLiabilityResponseDto {
+export class NetworthViewResponseDto {
   // selected currency
   // currency exchange rates
   // rates provider

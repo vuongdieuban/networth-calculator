@@ -14,7 +14,7 @@ export class AuthController {
     private readonly authService: AuthService,
   ) {}
 
-  @Post('/sign-up')
+  @Post('/register')
   public async signup(@Body() payload: SignUpRequestDto): Promise<SignUpResponseDto> {
     const { username, password } = payload;
     const user = await this.userService.getOrCreateUser(username, password);
