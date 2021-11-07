@@ -4,10 +4,10 @@ import * as jwt from 'jsonwebtoken';
 import * as moment from 'moment';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
-import { RefreshTokenEntity } from './entities/refresh-token.entity';
-import { AccessTokenPayload } from './interfaces/access-token-payload';
-import { CredentialsTokens } from './interfaces/credentials-token';
-import { RefreshTokenPayload } from './interfaces/refresh-token-payload';
+import { RefreshTokenEntity } from '../entities/refresh-token.entity';
+import { AccessTokenPayload } from '../interfaces/access-token-payload';
+import { CredentialsTokens } from '../interfaces/credentials-token';
+import { RefreshTokenPayload } from '../interfaces/refresh-token-payload';
 
 interface GeneratedRefreshToken {
   refreshTokenId: string;
@@ -93,6 +93,7 @@ export class TokenService {
   public async generateRefreshToken(userId: string): Promise<GeneratedRefreshToken> {
     let refreshToken = new RefreshTokenEntity();
     refreshToken.expiryDate = moment().add(7, 'd').toDate();
+    refreshToken.userId = userId;
 
     refreshToken = await this.refreshTokenRepo.save(refreshToken);
 

@@ -1,19 +1,10 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Req,
-  Res,
-  UnauthorizedException,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Post, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CookieOptions, Request, Response } from 'express';
-import { UserEntity } from 'src/user/entities/user.entity';
-import { UserService } from 'src/user/user.service';
-import { AuthService } from './auth.service';
+import { AuthService } from './services/auth.service';
 import { SignUpRequestDto, SignUpResponseDto } from './dto/signup.dto';
+import { ValidatedUser } from './interfaces/validated-user';
+import { UserService } from 'src/user/services/user.service';
 
 @Controller('auth')
 export class AuthController {
@@ -27,7 +18,6 @@ export class AuthController {
   public async signup(@Body() payload: SignUpRequestDto): Promise<SignUpResponseDto> {
     const { username, password } = payload;
     const user = await this.userService.getOrCreateUser(username, password);
-    console.log('USEr', user);
     return { userId: user.id };
   }
 
@@ -38,20 +28,20 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
   ): Promise<void> {
     // attached and validated by LocalAuthGuard
-    const user = request.user as UserEntity;
-    if (!user) {
-      throw new UnauthorizedException('Invalid Credentials');
-    }
-    const { accessToken, refreshToken } = await this.authService.login(user.id);
+    const user = request.user as ValidatedUser;
+    const { accessToken, refreshToken } = await this.authService.login(user.userId);
 
     const cookieOptions = this.getCookieOptions();
 
     response.cookie(this.REFRESH_TOKEN_COOKIE_NAME, refreshToken, cookieOptions);
-    response.json({ accessToken, userId: user.id });
+    response.json({ accessToken, userId: user.userId });
   }
 
   @Post('/logout')
-  public async logout(@Req() request: Request, @Res() response: Response): Promise<void> {
+  public async logout(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<void> {
     const accessToken = this.extractAccessTokenFromAuthHeader(request);
     const refreshToken = this.extractRefreshTokenFromCookie(request);
 
@@ -63,16 +53,19 @@ export class AuthController {
   }
 
   @Post('/renew-token')
-  public async renewAccessToken(@Req() request: Request, @Res() response: Response): Promise<void> {
+  public async renewAccessToken(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<void> {
     const existedRefreshToken = this.extractRefreshTokenFromCookie(request);
-    const [user, { refreshToken, accessToken }] = await this.authService.renewAccessToken(
+    const [userId, { refreshToken, accessToken }] = await this.authService.renewAccessToken(
       existedRefreshToken,
     );
 
     const cookieOptions = this.getCookieOptions();
 
     response.cookie(this.REFRESH_TOKEN_COOKIE_NAME, refreshToken, cookieOptions);
-    response.json({ accessToken, user });
+    response.json({ accessToken, userId });
   }
 
   private extractAccessTokenFromAuthHeader(request: Request): string {

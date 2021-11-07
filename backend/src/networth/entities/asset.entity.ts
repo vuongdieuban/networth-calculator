@@ -1,13 +1,17 @@
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
-import { AbstractEntity } from '../../shared/abstract.entity';
+import { Column, Entity, JoinColumn, OneToOne, Unique } from 'typeorm';
+import { AbstractEntity } from '../../shared/entities/abstract.entity';
 import { moneyColumnOption } from './money-column-option';
 import { UserEntity } from '../../user/entities/user.entity';
 
 @Entity()
+@Unique(['userId'])
 export class AssetEntity extends AbstractEntity {
+  @Column({ name: 'user_id', type: 'text' })
+  userId: string;
+
   @OneToOne(() => UserEntity)
-  @JoinColumn()
-  user: UserEntity;
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
+  user?: UserEntity;
 
   @Column({
     ...moneyColumnOption,
