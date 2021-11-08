@@ -3,6 +3,7 @@ import { CurrencyType } from 'src/shared/constants/currency-type.enum';
 
 @Injectable()
 export class ExchangeService {
+  // https://freecurrencyapi.net/api/v2/latest?apikey=a855f290-403d-11ec-8d71-55c3daa61ab5&base_currency=CAD
   // {
   //   "CAD" : {
   //     "USD" : 1.2,
