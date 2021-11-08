@@ -23,6 +23,7 @@ import { ExchangeService } from './networth/services/exchange/exchange.service';
 import { LiabilityService } from './networth/services/liability/liability.service';
 import { AssetService } from './networth/services/asset/asset.service';
 import { NetworthService } from './networth/services/networth/networth.service';
+import { SelectedCurrencyService } from './networth/services/selected-currency/selected-currency.service';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { NetworthService } from './networth/services/networth/networth.service';
     ExchangeService,
     LiabilityService,
     AssetService,
+    SelectedCurrencyService,
   ],
 })
 export class AppModule {}

@@ -9,6 +9,8 @@ import { LiabilityEntity } from 'src/networth/entities/liability.entity';
 import { ExchangeService } from '../exchange/exchange.service';
 import { AssetService } from '../asset/asset.service';
 import { LiabilityService } from '../liability/liability.service';
+import { SelectedCurrencyService } from '../selected-currency/selected-currency.service';
+import { CurrencyType } from 'src/shared/constants/currency-type.enum';
 
 export interface NetworthValues {
   totalNetworth: number;
@@ -20,6 +22,7 @@ export interface NetworthProfile {
   networthValues: NetworthValues;
   liability: LiabilityEntity;
   asset: AssetEntity;
+  selectedCurrency: CurrencyType;
 }
 
 @Injectable()
@@ -28,6 +31,7 @@ export class NetworthService {
     private readonly liabilityService: LiabilityService,
     private readonly assetService: AssetService,
     private readonly exchangeService: ExchangeService,
+    private readonly selectedCurrencyService: SelectedCurrencyService,
   ) {}
 
   public async calculateAndUpdateNetworthWithNewRate(
@@ -43,26 +47,38 @@ export class NetworthService {
       liabilities,
     );
 
-    if (!(updatedAsset && updatedLiability)) {
+    const updatedCurrency = await this.selectedCurrencyService.updateSelectedCurrencyProfile(
+      userId,
+      toCurrency,
+    );
+
+    if (!(updatedAsset && updatedLiability && updatedCurrency)) {
       return undefined;
     }
-    return this.calculateAndGenerateNetworthProfile(updatedAsset, updatedLiability);
+    return this.calculateAndGenerateNetworthProfile(updatedAsset, updatedLiability, toCurrency);
   }
 
   public async createInitialNetworthProfile(userId: string): Promise<NetworthProfile> {
     const assetPromise = this.assetService.createInitialAssetProfile(userId);
     const liabilityPromise = this.liabilityService.createInitialLiabilityProfile(userId);
+    const selectedCurrencyPromise =
+      this.selectedCurrencyService.createSelectedCurrencyProfile(userId);
 
-    const [asset, liability] = await Promise.all([assetPromise, liabilityPromise]);
-    return this.calculateAndGenerateNetworthProfile(asset, liability);
+    const [asset, liability, selectedCurrency] = await Promise.all([
+      assetPromise,
+      liabilityPromise,
+      selectedCurrencyPromise,
+    ]);
+    return this.calculateAndGenerateNetworthProfile(asset, liability, selectedCurrency.currency);
   }
 
   public async getNetworthProfile(userId: string): Promise<NetworthProfile | undefined> {
     const [asset, liability] = await this.getLiabilityAndAssetProfile(userId);
-    if (!(asset && liability)) {
+    const selectedCurrency = await this.selectedCurrencyService.getSelectedCurrencyProfile(userId);
+    if (!(asset && liability && selectedCurrency)) {
       return undefined;
     }
-    return this.calculateAndGenerateNetworthProfile(asset, liability);
+    return this.calculateAndGenerateNetworthProfile(asset, liability, selectedCurrency.currency);
   }
 
   private async updateAssetAndLiabilityWithNewRate(
@@ -87,6 +103,7 @@ export class NetworthService {
   private calculateAndGenerateNetworthProfile(
     asset: AssetEntity,
     liability: LiabilityEntity,
+    selectedCurrency: CurrencyType,
   ): NetworthProfile {
     const totalAssets = this.assetService.calculateTotalAssetValue(asset);
     const totalLiabilities = this.liabilityService.calculateTotalLiabilityValue(liability);
@@ -99,6 +116,7 @@ export class NetworthService {
     };
 
     return {
+      selectedCurrency,
       networthValues,
       asset,
       liability,

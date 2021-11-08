@@ -1,7 +1,7 @@
+import { CurrencyType } from 'src/shared/constants/currency-type.enum';
+
 export class NetworthViewResponseDto {
-  // selected currency
-  // currency exchange rates
-  // rates provider
+  selectedCurrency: CurrencyType;
   totalNetworth: number;
   assets: {
     totalAssets: number;

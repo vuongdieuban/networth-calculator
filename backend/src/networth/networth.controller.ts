@@ -7,29 +7,28 @@ import { NetworthViewResponseDto } from './dtos/networth-view-response';
 import { NetworthProfile, NetworthService } from './services/networth/networth.service';
 
 // Auth Guard will protect these endpoints and validate the token
-// Once valid it will reach here and also has injected req.user into Request object
+// If valid it will reach here and also has injected req.user into Request object
 @UseGuards(JwtAuthGuard)
 @Controller('networth')
 export class NetworthController {
+  private readonly missingProfileErrorMsg =
+    'This user does not have asset or liability or currency profile created';
+
   constructor(private readonly networthService: NetworthService) {}
 
   @Get('/')
   public async getNetworthProfile(@Req() req: Request): Promise<NetworthViewResponseDto> {
     const userId = this.extractUserIdFromRequest(req);
-
     const profile = await this.networthService.getNetworthProfile(userId);
     if (!profile) {
-      throw new BadRequestException('This user does not have asset or liability profile created');
+      throw new BadRequestException(this.missingProfileErrorMsg);
     }
     return this.formatNetworthProfileToViewResponse(profile);
   }
 
   @Post('/create')
-  public async createInitialAssetAndLiability(
-    @Req() req: Request,
-  ): Promise<NetworthViewResponseDto> {
+  public async createInitialNetworthProfile(@Req() req: Request): Promise<NetworthViewResponseDto> {
     const userId = this.extractUserIdFromRequest(req);
-    // TODO: create user selected currency profile
     const profile = await this.networthService.createInitialNetworthProfile(userId);
     return this.formatNetworthProfileToViewResponse(profile);
   }
@@ -45,7 +44,7 @@ export class NetworthController {
       payload,
     );
     if (!updatedProfile) {
-      throw new BadRequestException('This user does not have asset or liability profile created');
+      throw new BadRequestException(this.missingProfileErrorMsg);
     }
     return this.formatNetworthProfileToViewResponse(updatedProfile);
   }
@@ -56,10 +55,11 @@ export class NetworthController {
   }
 
   private formatNetworthProfileToViewResponse(profile: NetworthProfile): NetworthViewResponseDto {
-    const { networthValues, asset, liability } = profile;
+    const { networthValues, asset, liability, selectedCurrency } = profile;
     const { totalAssets, totalLiabilities, totalNetworth } = networthValues;
 
     return {
+      selectedCurrency,
       totalNetworth,
       assets: {
         totalAssets,
