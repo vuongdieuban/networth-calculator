@@ -6,7 +6,7 @@ import {
 } from 'src/networth/dtos/calculate-networth-request.dto';
 import { AssetEntity } from 'src/networth/entities/asset.entity';
 import { LiabilityEntity } from 'src/networth/entities/liability.entity';
-import { ExchangeService } from 'src/shared/services/exchange/exchange.service';
+import { ExchangeService } from '../exchange/exchange.service';
 import { AssetService } from '../asset/asset.service';
 import { LiabilityService } from '../liability/liability.service';
 

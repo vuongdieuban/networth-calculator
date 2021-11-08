@@ -19,7 +19,7 @@ import { UserService } from './user/services/user.service';
 import { AssetEntity } from './networth/entities/asset.entity';
 import { LiabilityEntity } from './networth/entities/liability.entity';
 import { UserSelectedCurrencyEntity } from './networth/entities/user-selected-currency.entity';
-import { ExchangeService } from './shared/services/exchange/exchange.service';
+import { ExchangeService } from './networth/services/exchange/exchange.service';
 import { LiabilityService } from './networth/services/liability/liability.service';
 import { AssetService } from './networth/services/asset/asset.service';
 import { NetworthService } from './networth/services/networth/networth.service';
