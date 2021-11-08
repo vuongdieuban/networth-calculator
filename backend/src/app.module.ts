@@ -25,10 +25,12 @@ import { AssetService } from './networth/services/asset/asset.service';
 import { NetworthService } from './networth/services/networth/networth.service';
 import { SelectedCurrencyService } from './networth/services/selected-currency/selected-currency.service';
 import { exchangeProviderFactory } from './networth/services/exchange/exchange-provider-factory';
+import { TasksSchedulingService } from './shared/services/task-scheduling/task-scheduling.service';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
-    PassportModule,
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRoot(),
     TypeOrmModule.forFeature([
       UserEntity,
@@ -39,6 +41,7 @@ import { exchangeProviderFactory } from './networth/services/exchange/exchange-p
     ]),
     TerminusModule,
     HttpModule,
+    PassportModule,
   ],
   controllers: [HealthController, NetworthController, AuthController],
   providers: [
@@ -61,6 +64,7 @@ import { exchangeProviderFactory } from './networth/services/exchange/exchange-p
     LiabilityService,
     AssetService,
     SelectedCurrencyService,
+    TasksSchedulingService,
   ],
 })
 export class AppModule {}

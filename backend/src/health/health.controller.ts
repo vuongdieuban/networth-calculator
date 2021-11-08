@@ -13,7 +13,6 @@ export class HealthController {
 
   @Get('test')
   async test() {
-    await this.exchangeService.loadRatesIntoCache();
     return this.exchangeService.getRate(CurrencyType.CAD, CurrencyType.USD);
   }
 
