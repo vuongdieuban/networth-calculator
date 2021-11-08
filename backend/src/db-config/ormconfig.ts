@@ -8,18 +8,15 @@ export const ormconfig: ConnectionOptions = {
   username: 'postgres',
   password: 'postgres',
   database: 'demo',
-  entities: [
-    join(__dirname, '**', '*.entity.{ts,js}'),
-    './dist/**/*.entity.{ts,js}',
-  ],
+  entities: [join(__dirname, '**', '*.entity.{ts,js}'), './dist/**/*.entity.{ts,js}'],
 
   migrationsTableName: 'migration',
   migrations: ['dist/migrations/*.js'],
   cli: {
     migrationsDir: 'src/migrations',
   },
-  synchronize: process.env.NODE_ENV === 'development', // false in prod
-  dropSchema: process.env.NODE_ENV === 'development', // false in prod
+  synchronize: false,
+  dropSchema: false,
   migrationsRun: true,
   logging: ['schema', 'query', 'error'],
 };

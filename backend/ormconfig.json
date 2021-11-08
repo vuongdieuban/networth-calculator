@@ -16,8 +16,8 @@
   "cli": {
     "migrationsDir": "src/migrations"
   },
-  "synchronize": true,
-  "dropSchema": true,
+  "synchronize": false,
+  "dropSchema": false,
   "migrationsRun": true,
   "logging": [
     "schema",
