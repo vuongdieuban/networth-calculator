@@ -39,7 +39,7 @@ export class NetworthService {
     updatedInput: CalculateNetworthRequestDto,
   ): Promise<NetworthProfile | undefined> {
     const { fromCurrency, toCurrency, assets, liabilities } = updatedInput;
-    const rate = this.exchangeService.getRate(fromCurrency, toCurrency);
+    const rate = await this.exchangeService.getRate(fromCurrency, toCurrency);
     const [updatedAsset, updatedLiability] = await this.updateAssetAndLiabilityWithNewRate(
       userId,
       rate,

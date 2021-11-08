@@ -4,7 +4,7 @@ import { TerminusModule } from '@nestjs/terminus';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TransformInterceptor } from './shared/interceptors/transform.interceptor';
 import { HealthController } from './health/health.controller';
-import { HttpModule } from '@nestjs/axios';
+import { HttpModule, HttpService } from '@nestjs/axios';
 import { NetworthController } from './networth/networth.controller';
 import { HashingService } from './shared/services/hashing/hashing.service';
 import { UserEntity } from './user/entities/user.entity';
@@ -24,6 +24,7 @@ import { LiabilityService } from './networth/services/liability/liability.servic
 import { AssetService } from './networth/services/asset/asset.service';
 import { NetworthService } from './networth/services/networth/networth.service';
 import { SelectedCurrencyService } from './networth/services/selected-currency/selected-currency.service';
+import { exchangeProviderFactory } from './networth/services/exchange/exchange-provider-factory';
 
 @Module({
   imports: [
@@ -45,6 +46,11 @@ import { SelectedCurrencyService } from './networth/services/selected-currency/s
       provide: APP_INTERCEPTOR,
       useClass: TransformInterceptor,
     },
+    {
+      provide: ExchangeService,
+      useFactory: exchangeProviderFactory,
+      inject: [HttpService],
+    },
     UserService,
     HashingService,
     AuthService,
@@ -52,7 +58,6 @@ import { SelectedCurrencyService } from './networth/services/selected-currency/s
     LocalStrategy,
     TokenService,
     NetworthService,
-    ExchangeService,
     LiabilityService,
     AssetService,
     SelectedCurrencyService,
