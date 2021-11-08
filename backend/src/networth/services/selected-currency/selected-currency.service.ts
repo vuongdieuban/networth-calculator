@@ -24,10 +24,10 @@ export class SelectedCurrencyService {
     userId: string,
     currency: CurrencyType,
   ): Promise<UserSelectedCurrencyEntity | undefined> {
-    const currentSelectedCurrency = this.selectedCurrencyRepo.findOne({ userId });
+    const currentSelectedCurrency = await this.selectedCurrencyRepo.findOne({ userId });
     if (!currentSelectedCurrency) {
       return undefined;
     }
-    return this.selectedCurrencyRepo.save({ currency });
+    return this.selectedCurrencyRepo.save({ ...currentSelectedCurrency, currency });
   }
 }

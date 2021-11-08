@@ -91,7 +91,7 @@ export class NetworthController {
         longTermDebt: {
           mortgage1: liability.mortgage1,
           mortgage1MonthlyPayment: liability.mortgage1MonthlyPayment,
-          mortgage2: liability.mortgage2MonthlyPayment,
+          mortgage2: liability.mortgage2,
           mortgage2MonthlyPayment: liability.mortgage2MonthlyPayment,
           lineOfCredit: liability.lineOfCredit,
           lineOfCreditMonthlyPayment: liability.lineOfCreditMonthlyPayment,
