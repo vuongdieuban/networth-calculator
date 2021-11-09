@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { HashingService } from 'src/shared/services/hashing/hashing.service';
 import { UserService } from 'src/user/services/user.service';
 import { CredentialsTokens } from '../interfaces/credentials-token';
@@ -31,28 +31,18 @@ export class AuthService {
     return this.tokenService.generateAccessTokenAndRefreshToken(userId);
   }
 
-  public async logout(signedAccessToken: string, signedRefreshToken: string): Promise<void> {
-    const isAccessTokenValid = this.tokenService.isTokenValid(signedAccessToken, true);
+  public async logout(signedRefreshToken: string): Promise<void> {
     const isRefreshTokenValid = this.tokenService.isTokenValid(signedRefreshToken, true);
-    if (!(isAccessTokenValid && isRefreshTokenValid)) {
+    if (!isRefreshTokenValid) {
       throw new UnauthorizedException('Invalid Token');
     }
 
     const refreshTokenId = this.tokenService.getRefreshTokenId(signedRefreshToken);
     const refreshToken = await this.tokenService.getRefreshTokenById(refreshTokenId);
 
-    if (!refreshToken) {
-      throw new UnauthorizedException('Refresh token not found');
+    if (refreshToken) {
+      await this.tokenService.invalidateRefreshToken(refreshToken);
     }
-
-    if (!this.tokenService.isAccessTokenLinkToRefreshToken(signedAccessToken, refreshToken)) {
-      throw new UnauthorizedException('Access Token and Refresh Token do not match');
-    }
-
-    if (this.tokenService.isRefreshTokenInvalidated(refreshToken)) {
-      throw new UnauthorizedException('Refresh Token Invalidated');
-    }
-    await this.tokenService.invalidateRefreshToken(refreshToken);
   }
 
   public async renewAccessToken(signedRefreshToken: string): Promise<[string, CredentialsTokens]> {

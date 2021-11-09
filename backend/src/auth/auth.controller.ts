@@ -42,10 +42,9 @@ export class AuthController {
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ): Promise<void> {
-    const accessToken = this.extractAccessTokenFromAuthHeader(request);
     const refreshToken = this.extractRefreshTokenFromCookie(request);
 
-    await this.authService.logout(accessToken, refreshToken);
+    await this.authService.logout(refreshToken);
     const cookieOptions = this.getCookieOptions();
 
     response.clearCookie(this.REFRESH_TOKEN_COOKIE_NAME, { ...cookieOptions, maxAge: 0 });
