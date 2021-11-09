@@ -14,7 +14,7 @@ export class TasksSchedulingService {
   }
 
   // run at interval
-  @Cron(CronExpression.EVERY_2_HOURS)
+  @Cron(CronExpression.EVERY_DAY_AT_NOON)
   public async loadRatesAtInterval() {
     console.log('Load Rates');
     await this.exchangeService.loadRatesIntoCache();

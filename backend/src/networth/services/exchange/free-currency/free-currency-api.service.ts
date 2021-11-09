@@ -10,7 +10,7 @@ export class FreeCurrencyApiRatesProvider extends ExchangeService {
   }
 
   public async getRate(fromCurrency: CurrencyType, toCurrency: CurrencyType): Promise<number> {
-    return this.ratesCache[fromCurrency][toCurrency] || 0;
+    return this.ratesCache[fromCurrency][toCurrency] || 1;
   }
 
   public async loadRatesIntoCache(): Promise<void> {
