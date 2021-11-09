@@ -1,10 +1,13 @@
 import { ExchangeService } from '../exchange.service';
-import { lastValueFrom, map, take, tap } from 'rxjs';
+import { lastValueFrom, map, take } from 'rxjs';
 import { CurrencyType } from 'src/shared/constants/currency-type.enum';
 import { HttpService } from '@nestjs/axios';
+import * as fs from 'fs';
 
 export class FreeCurrencyApiRatesProvider extends ExchangeService {
   private ratesCache: Record<string, Record<string, number>>;
+  private supportedCurrencies = Object.values(CurrencyType) as string[];
+
   constructor(private readonly httpService: HttpService) {
     super();
   }
@@ -14,33 +17,50 @@ export class FreeCurrencyApiRatesProvider extends ExchangeService {
   }
 
   public async loadRatesIntoCache(): Promise<void> {
-    const baseCurrencies = Object.values(CurrencyType) as string[];
-    const ratesRecord: Record<string, Record<string, number>> = {};
-    baseCurrencies.forEach((currency) => {
-      ratesRecord[currency] = {};
+    const ratesCache: Record<string, Record<string, number>> = {};
+
+    const ratesPromises = this.fetchRatesFromProvider();
+    const parsedRatesResponse = await Promise.all(ratesPromises);
+
+    parsedRatesResponse.forEach(({ currency, parsedRates }) => {
+      ratesCache[currency] = parsedRates;
     });
 
-    const promiseArr = baseCurrencies.map((currency) => {
-      const url = `https://freecurrencyapi.net/api/v2/latest?apikey=a855f290-403d-11ec-8d71-55c3daa61ab5&base_currency=${currency}`;
+    fs.writeFileSync('test-data.json', JSON.stringify(ratesCache));
+
+    this.ratesCache = ratesCache;
+  }
+
+  private fetchRatesFromProvider() {
+    return this.supportedCurrencies.map((currency) => {
+      const apiKey = process.env.API_KEY as string;
+      const url = `https://freecurrencyapi.net/api/v2/latest?apikey=${apiKey}&base_currency=${currency}`;
       const response$ = this.httpService.get(url).pipe(
         take(1),
         map(({ data }) => data.data),
-        tap((rates: Record<string, number>) => {
-          const sanitizedRates = {
-            [currency]: 1,
-          };
-          for (const [key, value] of Object.entries(rates)) {
-            if (baseCurrencies.includes(key)) {
-              sanitizedRates[key] = value;
-            }
-          }
-          ratesRecord[currency] = sanitizedRates;
+        map((rawRates: Record<string, number>) => {
+          const parsedRates = this.extractRatesFromProviderResponse(currency, rawRates);
+          return { currency, parsedRates };
         }),
       );
       return lastValueFrom(response$);
     });
+  }
 
-    await Promise.all(promiseArr);
-    this.ratesCache = ratesRecord;
+  private extractRatesFromProviderResponse(
+    currency: string,
+    rawRatesResponse: Record<string, number>,
+  ): Record<string, number> {
+    const parsedRates: Record<string, number> = {
+      [currency]: 1,
+    };
+
+    for (const [key, value] of Object.entries(rawRatesResponse)) {
+      if (this.supportedCurrencies.includes(key)) {
+        parsedRates[key] = value;
+      }
+    }
+
+    return parsedRates;
   }
 }
