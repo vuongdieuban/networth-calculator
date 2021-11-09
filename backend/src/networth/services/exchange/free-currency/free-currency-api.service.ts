@@ -2,7 +2,6 @@ import { ExchangeService } from '../exchange.service';
 import { lastValueFrom, map, take } from 'rxjs';
 import { CurrencyType } from 'src/shared/constants/currency-type.enum';
 import { HttpService } from '@nestjs/axios';
-import * as fs from 'fs';
 
 export class FreeCurrencyApiRatesProvider extends ExchangeService {
   private ratesCache: Record<string, Record<string, number>>;
@@ -25,8 +24,6 @@ export class FreeCurrencyApiRatesProvider extends ExchangeService {
     parsedRatesResponse.forEach(({ currency, parsedRates }) => {
       ratesCache[currency] = parsedRates;
     });
-
-    fs.writeFileSync('test-data.json', JSON.stringify(ratesCache));
 
     this.ratesCache = ratesCache;
   }
