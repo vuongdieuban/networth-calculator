@@ -1,11 +1,17 @@
-<form class="example-form">
-  <mat-form-field class="example-full-width" appearance="fill">
-    <mat-label>Favorite food</mat-label>
-    <input matInput placeholder="Ex. Pizza" value="Sushi" />
+<form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <mat-form-field class="login-full-width" appearance="fill">
+    <mat-label>Username</mat-label>
+    <input matInput placeholder="username" formControlName="username" />
   </mat-form-field>
 
-  <mat-form-field class="example-full-width" appearance="fill">
-    <mat-label>Leave a comment</mat-label>
-    <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
+  <mat-form-field class="login-full-width" appearance="fill">
+    <mat-label>Password</mat-label>
+    <input matInput placeholder="password" formControlName="password" />
   </mat-form-field>
+
+  <button mat-raised-button color="primary" [disabled]="!loginForm.valid">Submit</button>
+
+  <div *ngIf="loginForm.invalid && (loginForm.dirty || loginForm.touched)" class="alert-danger">
+    Both username and password is required
+  </div>
 </form>

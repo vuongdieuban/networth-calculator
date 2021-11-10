@@ -1,1 +1,24 @@
-<p>register-form works!</p>
+<form class="register-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+  <mat-form-field class="input-full-width" appearance="fill">
+    <mat-label>Username</mat-label>
+    <input matInput placeholder="username" formControlName="username" />
+  </mat-form-field>
+
+  <mat-form-field class="input-full-width" appearance="fill">
+    <mat-label>Password</mat-label>
+    <input matInput placeholder="password" formControlName="password" />
+  </mat-form-field>
+
+  <mat-form-field class="input-full-width" appearance="fill">
+    <mat-label>Confirm Password</mat-label>
+    <input matInput placeholder="password" formControlName="confirmPassword" />
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" [disabled]="!registerForm.valid">Submit</button>
+
+  <div *ngIf="registerForm.invalid && (registerForm.dirty || registerForm.touched)">
+    <div *ngIf="registerForm.errors?.['isPasswordMismatch']" class="alert-danger">
+      ConfirmPassword must match Password
+    </div>
+  </div>
+</form>
