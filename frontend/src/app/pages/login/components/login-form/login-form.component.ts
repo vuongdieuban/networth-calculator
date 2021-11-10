@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
+import { UserCredentialsInput } from '../interfaces/user-credentials-input.interface';
 
 @Component({
   selector: 'app-login-form',
@@ -8,6 +9,8 @@ import { Validators } from '@angular/forms';
   styleUrls: ['./login-form.component.scss'],
 })
 export class LoginFormComponent implements OnInit {
+  @Output() formSubmitted = new EventEmitter<UserCredentialsInput>();
+
   public loginForm = new FormGroup({
     username: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required),
@@ -17,7 +20,8 @@ export class LoginFormComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  public onSubmit() {
-    console.log('Login Submit', this.loginForm.value);
+  public onSubmit(): void {
+    const { username, password } = this.loginForm.value;
+    this.formSubmitted.emit({ username, password });
   }
 }

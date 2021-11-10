@@ -1,14 +1,17 @@
-<form class="register-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+<form class="form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+  <small>*Required</small>
   <mat-form-field class="input-full-width" appearance="fill">
     <mat-label>Username</mat-label>
     <input matInput placeholder="username" formControlName="username" />
   </mat-form-field>
 
+  <small>*Required</small>
   <mat-form-field class="input-full-width" appearance="fill">
     <mat-label>Password</mat-label>
     <input matInput placeholder="password" formControlName="password" />
   </mat-form-field>
 
+  <small>*Required</small>
   <mat-form-field class="input-full-width" appearance="fill">
     <mat-label>Confirm Password</mat-label>
     <input matInput placeholder="password" formControlName="confirmPassword" />

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -6,6 +6,7 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
+import { UserCredentialsInput } from '../interfaces/user-credentials-input.interface';
 
 @Component({
   selector: 'app-register-form',
@@ -13,6 +14,8 @@ import {
   styleUrls: ['./register-form.component.scss'],
 })
 export class RegisterFormComponent implements OnInit {
+  @Output() formSubmitted = new EventEmitter<UserCredentialsInput>();
+
   public registerForm = new FormGroup(
     {
       username: new FormControl('', Validators.required),
@@ -26,8 +29,9 @@ export class RegisterFormComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  public onSubmit() {
-    console.log('Register Submit', this.registerForm.value);
+  public onSubmit(): void {
+    const { username, password } = this.registerForm.value;
+    this.formSubmitted.emit({ username, password });
   }
 
   private confirmPasswordValidator(control: AbstractControl): ValidationErrors | null {

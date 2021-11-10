@@ -1,7 +1,7 @@
 <mat-button-toggle-group
   name="fontStyle"
   aria-label="Font Style"
-  (change)="handleButtonSelected($event.value)"
+  (change)="handleFormTypeSelected($event.value)"
 >
   <mat-button-toggle value="Login" [checked]="selectedForm === 'Login'"> Login </mat-button-toggle>
   <mat-button-toggle value="Register" [checked]="selectedForm === 'Register'">
@@ -10,9 +10,9 @@
 </mat-button-toggle-group>
 
 <ng-container *ngIf="selectedForm === 'Login'">
-  <app-login-form></app-login-form>
+  <app-login-form (formSubmitted)="handleLoginFormSubmitted($event)"></app-login-form>
 </ng-container>
 
 <ng-container *ngIf="selectedForm === 'Register'">
-  <app-register-form></app-register-form>
+  <app-register-form (formSubmitted)="handleRegisterFormSubmitted($event)"></app-register-form>
 </ng-container>

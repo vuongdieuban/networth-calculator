@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { UserCredentialsInput } from './components/interfaces/user-credentials-input.interface';
 
 type FormName = 'Login' | 'Register';
 
@@ -14,8 +15,16 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  public handleButtonSelected(selectedValue: FormName) {
+  public handleFormTypeSelected(selectedValue: FormName) {
     this.selectedForm = selectedValue;
     console.log(selectedValue);
+  }
+
+  public handleRegisterFormSubmitted(userCredentials: UserCredentialsInput) {
+    console.log('RegisterFormSubmitted', userCredentials);
+  }
+
+  public handleLoginFormSubmitted(userCredentials: UserCredentialsInput) {
+    console.log('LoginFormSubmitted', userCredentials);
   }
 }
