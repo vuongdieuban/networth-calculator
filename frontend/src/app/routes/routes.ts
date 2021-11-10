@@ -8,7 +8,7 @@ export const routes: Routes = [
   {
     path: 'networth',
     component: NetworthComponent,
-    canActivate: [AuthGuard],
+    // canActivate: [AuthGuard],
   },
   { path: '**', redirectTo: 'networth' },
 ];

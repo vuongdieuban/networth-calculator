@@ -1,0 +1,140 @@
+<h3>Networth: $XXXX</h3>
+
+<mat-form-field>
+  <mat-label>SupportedCurrencies</mat-label>
+  <mat-select>
+    <mat-option *ngFor="let currency of currencies" [value]="currency">
+      {{ currency }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<form>
+  <h3>Assets</h3>
+  <table>
+    <tr>
+      <th>Cash And Invesments</th>
+      <th></th>
+    </tr>
+    <tr>
+      <td>Chequing</td>
+      <td>$<input /></td>
+    </tr>
+    <tr>
+      <td>Savings For Taxes</td>
+      <td>$<input /></td>
+    </tr>
+    <tr>
+      <td>Rainy Day Fund</td>
+      <td>$<input /></td>
+    </tr>
+    <tr>
+      <td>Savings For Fun</td>
+      <td>$<input /></td>
+    </tr>
+    <tr>
+      <td>Savings For Travel</td>
+      <td>$<input /></td>
+    </tr>
+    <tr>
+      <td>Savings For Peronsal Development</td>
+      <td>$<input /></td>
+    </tr>
+    <tr>
+      <td>Investment 1</td>
+      <td>$<input /></td>
+    </tr>
+    <tr>
+      <td>Investment 2</td>
+      <td>$<input /></td>
+    </tr>
+    <tr>
+      <td>Investment 3</td>
+      <td>$<input /></td>
+    </tr>
+
+    <br />
+
+    <tr>
+      <th>Long Term Assets</th>
+      <th></th>
+    </tr>
+    <tr>
+      <td>Primary Home</td>
+      <td>$<input /></td>
+    </tr>
+    <tr>
+      <td>Secondary Home</td>
+      <td>$<input /></td>
+    </tr>
+    <tr>
+      <td>Other</td>
+      <td>$<input /></td>
+    </tr>
+
+    <br />
+
+    <tr>
+      <td>Total Assets</td>
+      <td>$ XXXX</td>
+    </tr>
+  </table>
+
+  <br />
+  <br />
+
+  <h3>Liabilities</h3>
+  <table>
+    <tr>
+      <th>Short Term Liabilities</th>
+      <th>Monthly Payment</th>
+      <th></th>
+    </tr>
+    <tr>
+      <td>Credit Card 1</td>
+      <td>$200</td>
+      <td>$<input /></td>
+    </tr>
+    <tr>
+      <td>Credit Card 2</td>
+      <td>$150</td>
+      <td>$<input /></td>
+    </tr>
+
+    <br />
+
+    <tr>
+      <th>Long Term Debt</th>
+      <th>Monthly Payment</th>
+      <th></th>
+    </tr>
+    <tr>
+      <td>Mortgage 1</td>
+      <td>$2000</td>
+      <td>$<input /></td>
+    </tr>
+    <tr>
+      <td>Mortgage 2</td>
+      <td>$3500</td>
+      <td>$<input /></td>
+    </tr>
+    <tr>
+      <td>Line of Credit</td>
+      <td>$500</td>
+      <td>$<input /></td>
+    </tr>
+    <tr>
+      <td>Investment Loan</td>
+      <td>$700</td>
+      <td>$<input /></td>
+    </tr>
+
+    <br />
+
+    <tr>
+      <td>Total Liabilities</td>
+      <td></td>
+      <td>$ XXXX</td>
+    </tr>
+  </table>
+</form>

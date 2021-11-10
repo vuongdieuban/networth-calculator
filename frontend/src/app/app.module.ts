@@ -6,6 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatTableModule } from '@angular/material/table';
+import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './routes/app-routing.module';
@@ -14,6 +16,7 @@ import { NetworthComponent } from './pages/networth/networth.component';
 import { AppComponent } from './app.component';
 import { LoginFormComponent } from './pages/login/components/login-form/login-form.component';
 import { RegisterFormComponent } from './pages/login/components/register-form/register-form.component';
+import { NetworthTableComponent } from './pages/networth/components/networth-table/networth-table.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +25,7 @@ import { RegisterFormComponent } from './pages/login/components/register-form/re
     LoginComponent,
     LoginFormComponent,
     RegisterFormComponent,
+    NetworthTableComponent,
   ],
   imports: [
     BrowserModule,
@@ -33,6 +37,8 @@ import { RegisterFormComponent } from './pages/login/components/register-form/re
     MatButtonModule,
     MatButtonToggleModule,
     ReactiveFormsModule,
+    MatTableModule,
+    MatSelectModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
