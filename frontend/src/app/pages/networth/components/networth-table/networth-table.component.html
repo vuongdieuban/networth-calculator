@@ -1,4 +1,4 @@
-<h3>Networth: {{ 1000 | currency }}</h3>
+<h3>Networth: {{ networthData.totalNetworth | currency }}</h3>
 
 <mat-form-field>
   <mat-label>SupportedCurrencies</mat-label>
@@ -16,78 +16,38 @@
       <th>Cash And Invesments</th>
       <th></th>
     </tr>
-    <tr>
-      <td>Chequing</td>
-      <td>$<input /></td>
+    <tr *ngFor="let asset of assets.cashAndInvestments">
+      <td>{{ asset.label }}</td>
+      <td>
+        $
+        <mat-form-field class="input-field">
+          <input matInput [formControlName]="asset.fieldName" [value]="asset.amount" />
+          <mat-placeholder class="placeholder">0.00</mat-placeholder>
+        </mat-form-field>
+      </td>
     </tr>
-    <tr>
-      <td>Savings For Taxes</td>
-      <td>$<input /></td>
-    </tr>
-    <tr>
-      <td>Rainy Day Fund</td>
-      <td>$<input /></td>
-    </tr>
-    <tr>
-      <td>Savings For Fun</td>
-      <td>$<input /></td>
-    </tr>
-    <tr>
-      <td>Savings For Travel</td>
-      <td>$<input /></td>
-    </tr>
-    <tr>
-      <td>Savings For Peronsal Development</td>
-      <td>$<input /></td>
-    </tr>
-    <tr>
-      <td>Investment 1</td>
-      <td>$<input /></td>
-    </tr>
-    <tr>
-      <td>Investment 2</td>
-      <td>$<input /></td>
-    </tr>
-    <tr>
-      <td>Investment 3</td>
-      <td>$<input /></td>
-    </tr>
-
     <br />
 
     <tr>
       <th>Long Term Assets</th>
       <th></th>
     </tr>
-    <tr>
-      <td>Primary Home</td>
-      <td>$<input /></td>
-    </tr>
-    <tr>
-      <td>Secondary Home</td>
-      <td>$<input /></td>
-    </tr>
-    <tr>
-      <td>Other</td>
-      <td>$<input /></td>
+    <tr *ngFor="let asset of assets.longTermAssets">
+      <td>{{ asset.label }}</td>
+      <td>
+        $
+        <mat-form-field class="input-field">
+          <input matInput [formControlName]="asset.fieldName" [value]="asset.amount" />
+          <mat-placeholder class="placeholder">0.00</mat-placeholder>
+        </mat-form-field>
+      </td>
     </tr>
 
     <br />
 
     <tr>
-      <td>Total Assets</td>
-      <td>{{ 3000 | currency }}</td>
-    </tr>
-
-    <tr *ngFor="let networth of networthData">
-      <td>{{ networth.label }}</td>
-      <td>
-        $
-        <mat-form-field class="input-field">
-          <input matInput [formControlName]="networth.formName" />
-          <mat-placeholder class="placeholder">0.00</mat-placeholder>
-        </mat-form-field>
-      </td>
+      <th>Total Assets</th>
+      <td>{{ networthData.totalAssets | currency }}</td>
     </tr>
   </table>
 
@@ -101,15 +61,16 @@
       <th>Monthly Payment</th>
       <th></th>
     </tr>
-    <tr>
-      <td>Credit Card 1</td>
-      <td>$200</td>
-      <td>$<input /></td>
-    </tr>
-    <tr>
-      <td>Credit Card 2</td>
-      <td>$150</td>
-      <td>$<input /></td>
+    <tr *ngFor="let liability of liabilities.shortermLiabilities">
+      <td>{{ liability.label }}</td>
+      <td>{{ liability.monthlyPayment | currency }}</td>
+      <td>
+        $
+        <mat-form-field class="input-field">
+          <input matInput [formControlName]="liability.fieldName" [value]="liability.amount" />
+          <mat-placeholder class="placeholder">0.00</mat-placeholder>
+        </mat-form-field>
+      </td>
     </tr>
 
     <br />
@@ -119,33 +80,24 @@
       <th>Monthly Payment</th>
       <th></th>
     </tr>
-    <tr>
-      <td>Mortgage 1</td>
-      <td>$2000</td>
-      <td>$<input /></td>
-    </tr>
-    <tr>
-      <td>Mortgage 2</td>
-      <td>$3500</td>
-      <td>$<input /></td>
-    </tr>
-    <tr>
-      <td>Line of Credit</td>
-      <td>$500</td>
-      <td>$<input /></td>
-    </tr>
-    <tr>
-      <td>Investment Loan</td>
-      <td>$700</td>
-      <td>$<input /></td>
+    <tr *ngFor="let liability of liabilities.longTermDebts">
+      <td>{{ liability.label }}</td>
+      <td>{{ liability.monthlyPayment | currency }}</td>
+      <td>
+        $
+        <mat-form-field class="input-field">
+          <input matInput [formControlName]="liability.fieldName" [value]="liability.amount" />
+          <mat-placeholder class="placeholder">0.00</mat-placeholder>
+        </mat-form-field>
+      </td>
     </tr>
 
     <br />
 
     <tr>
-      <td>Total Liabilities</td>
+      <th>Total Liabilities</th>
       <td></td>
-      <td>{{ 3000 | currency }}</td>
+      <td>{{ networthData.totalLiabilities | currency }}</td>
     </tr>
   </table>
 

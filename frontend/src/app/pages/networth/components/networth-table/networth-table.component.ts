@@ -1,6 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { CurrencyType } from '../../dtos/networth-data.interface';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { mockNetworthData } from '../../dtos/mock-networth-data';
+import {
+  CurrencyType,
+  NetworthViewResponseDto,
+  ViewAssetCategories,
+  ViewLiabilityCategories,
+} from '../../dtos/networth-view-data.interface';
 
 @Component({
   selector: 'app-networth-table',
@@ -8,11 +14,10 @@ import { CurrencyType } from '../../dtos/networth-data.interface';
   styleUrls: ['./networth-table.component.scss'],
 })
 export class NetworthTableComponent implements OnInit {
-  // should fetch currencies from backend, remove currency type enum.
-  currencies = Object.values(CurrencyType) as string[];
-  formFieldValidators = [
+  private readonly currencyPattern = /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/;
+  private readonly formFieldValidators = [
     Validators.required,
-    Validators.pattern(/^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/),
+    Validators.pattern(this.currencyPattern),
   ];
 
   public form = new FormGroup({
@@ -20,14 +25,33 @@ export class NetworthTableComponent implements OnInit {
     savingsForTaxes: new FormControl('', this.formFieldValidators),
   });
 
-  networthData = [
-    { label: 'Chequing', formName: 'chequing' },
-    { label: 'Savings For Taxes', formName: 'savingsForTaxes' },
-  ];
+  // should fetch currencies from backend, remove currency type enum.
+  public currencies = Object.values(CurrencyType) as string[];
 
-  ngOnInit() {}
+  public assets: ViewAssetCategories = mockNetworthData.assets;
+  public liabilities: ViewLiabilityCategories = mockNetworthData.liabilities;
+  public networthData: NetworthViewResponseDto = mockNetworthData as NetworthViewResponseDto;
 
-  onSubmit() {
+  ngOnInit() {
+    const formGroup: Record<string, AbstractControl> = {};
+
+    this.assets.cashAndInvestments.forEach((asset) => {
+      formGroup[asset.fieldName] = new FormControl(asset.amount, this.formFieldValidators);
+    });
+    this.assets.longTermAssets.forEach((asset) => {
+      formGroup[asset.fieldName] = new FormControl(asset.amount, this.formFieldValidators);
+    });
+    this.liabilities.longTermDebts.forEach((asset) => {
+      formGroup[asset.fieldName] = new FormControl(asset.amount, this.formFieldValidators);
+    });
+    this.liabilities.shortermLiabilities.forEach((asset) => {
+      formGroup[asset.fieldName] = new FormControl(asset.amount, this.formFieldValidators);
+    });
+
+    this.form = new FormGroup(formGroup);
+  }
+
+  public onSubmit() {
     console.log('Chequing', this.form.get('chequing')?.value);
     console.log('FORM VALUES', this.form.value);
   }
