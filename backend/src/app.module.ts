@@ -27,6 +27,7 @@ import { SelectedCurrencyService } from './networth/services/selected-currency/s
 import { exchangeProviderFactory } from './networth/services/exchange/exchange-provider-factory';
 import { TasksSchedulingService } from './shared/services/task-scheduling/task-scheduling.service';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ViewAdapterService } from './networth/services/view-adapter/view-adapter.service';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     AssetService,
     SelectedCurrencyService,
     TasksSchedulingService,
+    ViewAdapterService,
   ],
 })
 export class AppModule {}
