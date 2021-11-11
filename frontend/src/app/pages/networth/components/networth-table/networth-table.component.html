@@ -1,4 +1,4 @@
-<h3>Networth: $XXXX</h3>
+<h3>Networth: {{ 1000 | currency }}</h3>
 
 <mat-form-field>
   <mat-label>SupportedCurrencies</mat-label>
@@ -76,7 +76,7 @@
 
     <tr>
       <td>Total Assets</td>
-      <td>$ XXXX</td>
+      <td>{{ 3000 | currency }}</td>
     </tr>
 
     <tr *ngFor="let networth of networthData">
@@ -145,7 +145,7 @@
     <tr>
       <td>Total Liabilities</td>
       <td></td>
-      <td>$ XXXX</td>
+      <td>{{ 3000 | currency }}</td>
     </tr>
   </table>
 
