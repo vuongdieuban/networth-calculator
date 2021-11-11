@@ -9,7 +9,7 @@
   </mat-select>
 </mat-form-field>
 
-<form>
+<form (ngSubmit)="onSubmit()" [formGroup]="form">
   <h3>Assets</h3>
   <table>
     <tr>
@@ -78,6 +78,17 @@
       <td>Total Assets</td>
       <td>$ XXXX</td>
     </tr>
+
+    <tr *ngFor="let networth of networthData">
+      <td>{{ networth.label }}</td>
+      <td>
+        $
+        <mat-form-field class="input-field">
+          <input matInput [formControlName]="networth.formName" />
+          <mat-placeholder class="placeholder">0.00</mat-placeholder>
+        </mat-form-field>
+      </td>
+    </tr>
   </table>
 
   <br />
@@ -137,4 +148,6 @@
       <td>$ XXXX</td>
     </tr>
   </table>
+
+  <button>Submit</button>
 </form>

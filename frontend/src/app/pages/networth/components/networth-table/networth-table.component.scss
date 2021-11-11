@@ -18,3 +18,11 @@ tr:nth-child(even) {
 .input-field {
   width: 200px;
 }
+
+.mat-focused .placeholder {
+  display: none;
+}
+
+.mat-form-field-should-float .placeholder {
+  display: none;
+}
