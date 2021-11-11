@@ -1,16 +1,26 @@
 import { CurrencyType } from 'src/shared/constants/currency-type.enum';
 
-export class ViewAssetType {
+export class ViewAssetTypeDetails {
   label: string;
   fieldName: string;
   amount: string; // for display purpose "5.00"
 }
 
-export class ViewLiabilityType {
+export class ViewAssetCategories {
+  cashAndInvestments: ViewAssetTypeDetails[];
+  longTermAssets: ViewAssetTypeDetails[];
+}
+
+export class ViewLiabilityTypeDetails {
   label: string;
   fieldName: string;
   amount: string;
   monthlyPayment: string;
+}
+
+export class ViewLiabilityCategories {
+  shortermLiabilities: ViewLiabilityTypeDetails[];
+  longTermDebts: ViewLiabilityTypeDetails[];
 }
 
 export class NetworthViewResponseDto {
@@ -18,12 +28,6 @@ export class NetworthViewResponseDto {
   totalNetworth: string;
   totalLiabilities: string;
   totalAssets: string;
-  assets: {
-    cashAndInvestments: ViewAssetType[];
-    longTermAssets: ViewAssetType[];
-  };
-  liabilities: {
-    shortermLiabilities: ViewLiabilityType[];
-    longTermDebts: ViewLiabilityType[];
-  };
+  assets: ViewAssetCategories;
+  liabilities: ViewLiabilityCategories;
 }
