@@ -21,19 +21,9 @@ export class NetworthController {
   ) {}
 
   @Get('/')
-  public async getNetworthProfile(@Req() req: Request): Promise<NetworthViewResponseDto> {
+  public async getOrCreateNetworthProfile(@Req() req: Request): Promise<NetworthViewResponseDto> {
     const userId = this.extractUserIdFromRequest(req);
-    const profile = await this.networthService.getNetworthProfile(userId);
-    if (!profile) {
-      throw new NotFoundException(this.missingProfileErrorMsg);
-    }
-    return this.viewAdapter.formatNetworthProfileToViewResponse(profile);
-  }
-
-  @Post('/create')
-  public async createInitialNetworthProfile(@Req() req: Request): Promise<NetworthViewResponseDto> {
-    const userId = this.extractUserIdFromRequest(req);
-    const profile = await this.networthService.createInitialNetworthProfile(userId);
+    const profile = await this.networthService.getOrCreateNetworthProfile(userId);
     return this.viewAdapter.formatNetworthProfileToViewResponse(profile);
   }
 

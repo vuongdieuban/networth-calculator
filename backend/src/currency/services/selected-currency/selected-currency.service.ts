@@ -11,7 +11,23 @@ export class SelectedCurrencyService {
     private readonly selectedCurrencyRepo: Repository<UserSelectedCurrencyEntity>,
   ) {}
 
-  public async getSelectedCurrencyProfile(userId: string) {
+  public getAllSupportedCurrencies() {
+    return Object.values(CurrencyType);
+  }
+
+  public async getOrCreateUserSelectedCurrency(
+    userId: string,
+  ): Promise<UserSelectedCurrencyEntity> {
+    const selectedCurrency = await this.getUserSelectedCurrency(userId);
+    if (!selectedCurrency) {
+      return this.createSelectedCurrencyProfile(userId);
+    }
+    return selectedCurrency;
+  }
+
+  public async getUserSelectedCurrency(
+    userId: string,
+  ): Promise<UserSelectedCurrencyEntity | undefined> {
     return this.selectedCurrencyRepo.findOne({ userId });
   }
 
