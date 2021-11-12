@@ -17,6 +17,7 @@ import { AppComponent } from './app.component';
 import { LoginFormComponent } from './pages/login/components/login-form/login-form.component';
 import { RegisterFormComponent } from './pages/login/components/register-form/register-form.component';
 import { NetworthTableComponent } from './pages/networth/components/networth-table/networth-table.component';
+import { ErrorComponent } from './pages/error/error.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { NetworthTableComponent } from './pages/networth/components/networth-tab
     LoginFormComponent,
     RegisterFormComponent,
     NetworthTableComponent,
+    ErrorComponent,
   ],
   imports: [
     BrowserModule,

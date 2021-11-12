@@ -72,6 +72,7 @@ export class AuthService {
     if (status === 401) {
       return throwError(new UserUnauthenticatedError());
     }
+    console.error('LoginError', error);
     return throwError(new UnknownAuthenticationError(error.message));
   }
 
@@ -79,10 +80,12 @@ export class AuthService {
     if (error.status === 401) {
       return throwError(new UserUnauthenticatedError());
     }
+    console.error('RenewAccessTokenError', error);
     return throwError(new UnknownAuthenticationError(error.message));
   }
 
   private handleRegisterErrorResponse(error: HttpErrorResponse): Observable<never> {
+    console.error('RegisterError', error);
     return throwError(new UnknownAuthenticationError(error.message));
   }
 
