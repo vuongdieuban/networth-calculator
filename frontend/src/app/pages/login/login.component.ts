@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
+import { UserNotFoundError, UserUnauthenticatedError } from 'src/app/auth/errors/auth.error';
 import { AuthService } from 'src/app/auth/service/auth.service';
 import { UserCredentialsInput } from './interfaces/user-credentials-input.interface';
 
@@ -13,17 +14,19 @@ type FormName = 'Login' | 'Register';
 })
 export class LoginComponent implements OnInit {
   public selectedForm: FormName = 'Login';
+  public errorMsg = '';
 
   constructor(private readonly authService: AuthService, private readonly router: Router) {}
 
   ngOnInit(): void {}
 
   public handleFormTypeSelected(selectedValue: FormName) {
+    this.clearErrorMessage();
     this.selectedForm = selectedValue;
-    console.log(selectedValue);
   }
 
   public handleRegisterFormSubmitted(userCredentials: UserCredentialsInput) {
+    this.clearErrorMessage();
     const { username, password } = userCredentials;
     this.authService
       .register(username, password)
@@ -32,10 +35,31 @@ export class LoginComponent implements OnInit {
         () => this.router.navigate(['/networth']),
         () => this.router.navigate(['/error'])
       );
-    console.log('RegisterFormSubmitted', userCredentials);
   }
 
   public handleLoginFormSubmitted(userCredentials: UserCredentialsInput) {
-    console.log('LoginFormSubmitted', userCredentials);
+    this.clearErrorMessage();
+    const { username, password } = userCredentials;
+    this.authService.login(username, password).subscribe(
+      () => this.router.navigate(['/networth']),
+      (error) => this.handleLoginError(username, error)
+    );
+  }
+
+  private handleLoginError(username: string, error: Error) {
+    if (error instanceof UserUnauthenticatedError) {
+      this.errorMsg = 'Invalid Username or Password';
+      return;
+    }
+
+    if (error instanceof UserNotFoundError) {
+      this.errorMsg = `User with username ${username} not found. Please register account first`;
+      return;
+    }
+    this.router.navigate(['/error']);
+  }
+
+  private clearErrorMessage() {
+    this.errorMsg = '';
   }
 }

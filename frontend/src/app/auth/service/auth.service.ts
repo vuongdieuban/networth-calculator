@@ -28,6 +28,10 @@ export class AuthService {
     return this._accessToken;
   }
 
+  public isUserAuthenticated(): boolean {
+    return this._userId.length > 0;
+  }
+
   public renewAccessToken() {
     const url = new URL('auth/renew-token', this.BACKEND_BASE_URL).toString();
     return this.httpService.post<UserCredentialsResponse>(url, {}).pipe(
@@ -57,6 +61,10 @@ export class AuthService {
   public logout(): Observable<void> {
     const url = new URL('auth/logout', this.BACKEND_BASE_URL).toString();
     return this.httpService.post<void>(url, {}).pipe(tap(() => this.clearAccessTokenAndUserId()));
+  }
+
+  public clearStoredUserCredentials() {
+    this.clearAccessTokenAndUserId();
   }
 
   private extractAndSaveTokenData(tokenData: UserCredentialsResponse): void {

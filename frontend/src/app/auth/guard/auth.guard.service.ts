@@ -12,6 +12,11 @@ export class AuthGuard implements CanActivate {
   constructor(private readonly authService: AuthService, private readonly router: Router) {}
 
   public canActivate(): Observable<boolean | UrlTree> {
+    const isUserAuthenticated = this.authService.isUserAuthenticated();
+    if (isUserAuthenticated) {
+      return of(true);
+    }
+    // attempt to get access token thru refresh token in cookie
     return this.authService.renewAccessToken().pipe(
       map((userId) => true),
       catchError((error) => this.handleRenewAccessTokenError(error))
