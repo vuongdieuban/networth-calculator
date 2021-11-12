@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { HashingService } from 'src/shared/services/hashing/hashing.service';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/services/user.service';
+import { RefreshTokenEntity } from '../entities/refresh-token.entity';
 import { CredentialsTokens } from '../interfaces/credentials-token';
 import { TokenService } from './token.service';
 
@@ -39,9 +40,22 @@ export class AuthService {
     }
   }
 
-  public async renewAccessToken(
+  public async renewAccessAndRefreshToken(
     signedRefreshToken: string,
-  ): Promise<[string, CredentialsTokens] | undefined> {
+  ): Promise<CredentialsTokens | undefined> {
+    const refreshToken = await this.isSignedRefreshTokenValid(signedRefreshToken);
+    if (!refreshToken) {
+      return undefined;
+    }
+
+    const { userId } = refreshToken;
+    await this.tokenService.invalidateRefreshToken(refreshToken);
+    return this.tokenService.generateAccessTokenAndRefreshToken(userId);
+  }
+
+  private async isSignedRefreshTokenValid(
+    signedRefreshToken: string,
+  ): Promise<RefreshTokenEntity | undefined> {
     const isRefreshTokenValid = this.tokenService.isTokenValid(signedRefreshToken, true);
     if (!isRefreshTokenValid) {
       return undefined;
@@ -63,13 +77,6 @@ export class AuthService {
       return undefined;
     }
 
-    const { userId } = refreshToken;
-    const signedAccessToken = this.tokenService.generateAccessToken(userId, refreshToken.id);
-
-    const updatedCredentials: CredentialsTokens = {
-      accessToken: signedAccessToken,
-      refreshToken: signedRefreshToken,
-    };
-    return [userId, updatedCredentials];
+    return refreshToken;
   }
 }

@@ -15,5 +15,5 @@ export class RefreshTokenEntity extends AbstractEntity {
   invalidated: boolean;
 
   @Column({ name: 'expiry_date' })
-  expiryDate: Date;
+  expiryDate: string;
 }

@@ -1,14 +1,14 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreateInitDbEntities1636340207761 implements MigrationInterface {
-  name = 'CreateInitDbEntities1636340207761';
+export class CreateInitDbEntities1636748828500 implements MigrationInterface {
+  name = 'CreateInitDbEntities1636748828500';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
       `CREATE TABLE "user_entity" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_ts" TIMESTAMP NOT NULL DEFAULT now(), "updated_ts" TIMESTAMP NOT NULL DEFAULT now(), "username" character varying(32) NOT NULL, "hashed_password" character varying(256) NOT NULL, CONSTRAINT "UQ_9b998bada7cff93fcb953b0c37e" UNIQUE ("username"), CONSTRAINT "PK_b54f8ea623b17094db7667d8206" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "refresh_token_entity" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_ts" TIMESTAMP NOT NULL DEFAULT now(), "updated_ts" TIMESTAMP NOT NULL DEFAULT now(), "user_id" uuid NOT NULL, "invalidated" boolean NOT NULL DEFAULT false, "expiry_date" TIMESTAMP NOT NULL, CONSTRAINT "PK_a78813e06745b2c5d5b9776bfcf" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "refresh_token_entity" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_ts" TIMESTAMP NOT NULL DEFAULT now(), "updated_ts" TIMESTAMP NOT NULL DEFAULT now(), "user_id" uuid NOT NULL, "invalidated" boolean NOT NULL DEFAULT false, "expiry_date" character varying NOT NULL, CONSTRAINT "PK_a78813e06745b2c5d5b9776bfcf" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "asset_entity" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_ts" TIMESTAMP NOT NULL DEFAULT now(), "updated_ts" TIMESTAMP NOT NULL DEFAULT now(), "user_id" uuid NOT NULL, "chequing" numeric(14,2) NOT NULL DEFAULT '0', "savings_for_taxes" numeric(14,2) NOT NULL DEFAULT '0', "rainy_day_fund" numeric(14,2) NOT NULL DEFAULT '0', "savings_for_fun" numeric(14,2) NOT NULL DEFAULT '0', "savings_for_travel" numeric(14,2) NOT NULL DEFAULT '0', "savings_for_personal_development" numeric(14,2) NOT NULL DEFAULT '0', "investment_1" numeric(14,2) NOT NULL DEFAULT '0', "investment_2" numeric(14,2) NOT NULL DEFAULT '0', "investment_3" numeric(14,2) NOT NULL DEFAULT '0', "primary_home" numeric(14,2) NOT NULL DEFAULT '0', "secondary_home" numeric(14,2) NOT NULL DEFAULT '0', "other" numeric(14,2) NOT NULL DEFAULT '0', CONSTRAINT "UQ_509940740fede7555d89c104f54" UNIQUE ("user_id"), CONSTRAINT "REL_509940740fede7555d89c104f5" UNIQUE ("user_id"), CONSTRAINT "PK_038b7b28b83db2205747ef9912e" PRIMARY KEY ("id"))`,

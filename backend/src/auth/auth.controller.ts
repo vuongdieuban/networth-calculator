@@ -52,33 +52,23 @@ export class AuthController {
   }
 
   @Post('/renew-token')
-  public async renewAccessToken(
+  public async renewAccessAndRefreshToken(
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ): Promise<void> {
     const existedRefreshToken = this.extractRefreshTokenFromCookie(request);
-    const credentials = await this.authService.renewAccessToken(existedRefreshToken);
+    const credentials = await this.authService.renewAccessAndRefreshToken(existedRefreshToken);
 
     if (!credentials) {
       throw new UnauthorizedException('Invalid RefreshToken. Could not get AccessToken');
     }
 
-    const [userId, { refreshToken, accessToken }] = credentials;
+    const { userId, refreshToken, accessToken, accessTokenExpiredTs, refreshTokenExpiredTs } =
+      credentials;
 
     const cookieOptions = this.getCookieOptions();
     response.cookie(this.REFRESH_TOKEN_COOKIE_NAME, refreshToken, cookieOptions);
-    response.json({ accessToken, userId });
-  }
-
-  private extractAccessTokenFromAuthHeader(request: Request): string {
-    // Authorization: Bearer eyJhbGciOiJIUzI1NiIXVCJ9...TJVA95OrM7E20RMHrHDcEfxjoYZgeFONFh7HgQ
-    const bearerToken =
-      (request.headers['authorization'] as string) || (request.headers['Authorization'] as string);
-
-    if (!bearerToken) {
-      throw new UnauthorizedException('Missing Authorization Bearer token in request header');
-    }
-    return bearerToken.split(' ')[1];
+    response.json({ userId, accessToken, accessTokenExpiredTs, refreshTokenExpiredTs });
   }
 
   private extractRefreshTokenFromCookie(request: Request): string {
