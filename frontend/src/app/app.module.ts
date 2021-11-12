@@ -18,7 +18,8 @@ import { LoginFormComponent } from './pages/login/components/login-form/login-fo
 import { RegisterFormComponent } from './pages/login/components/register-form/register-form.component';
 import { NetworthTableComponent } from './pages/networth/components/networth-table/networth-table.component';
 import { ErrorComponent } from './pages/error/error.component';
-import { CustomHeaderInterceptor } from './shared/interceptors/custom-header.interceptor';
+import { AuthHeaderInterceptor } from './shared/auth/interceptors/auth-header.interceptor';
+import { AttachWithCredentialsHeaderInterceptor } from './shared/interceptors/attach-withcredentials-header.interceptor';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,12 @@ import { CustomHeaderInterceptor } from './shared/interceptors/custom-header.int
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: CustomHeaderInterceptor,
+      useClass: AttachWithCredentialsHeaderInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthHeaderInterceptor,
       multi: true,
     },
   ],

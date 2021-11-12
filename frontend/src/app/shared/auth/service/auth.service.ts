@@ -19,7 +19,7 @@ export class AuthService {
 
   constructor(private readonly httpService: HttpClient) {}
 
-  public get tokenCredentials() {
+  public get tokenCredentials(): TokenCredentialsInfo | undefined {
     return this._tokenCredentialsInfo;
   }
 
