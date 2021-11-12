@@ -2,7 +2,7 @@ import { Body, Controller, Post, Req, Res, UnauthorizedException, UseGuards } fr
 import { AuthGuard } from '@nestjs/passport';
 import { CookieOptions, Request, Response } from 'express';
 import { AuthService } from './services/auth.service';
-import { SignUpRequestDto, SignUpResponseDto } from './dto/signup.dto';
+import { RegisterRequestDto, RegisterResponseDto } from './dto/register';
 import { ValidatedUser } from './interfaces/validated-user';
 import { UserService } from 'src/user/services/user.service';
 
@@ -15,7 +15,7 @@ export class AuthController {
   ) {}
 
   @Post('/register')
-  public async signup(@Body() payload: SignUpRequestDto): Promise<SignUpResponseDto> {
+  public async signup(@Body() payload: RegisterRequestDto): Promise<RegisterResponseDto> {
     const { username, password } = payload;
     const user = await this.userService.getOrCreateUser(username, password);
     return { userId: user.id };
@@ -93,7 +93,7 @@ export class AuthController {
     const localEnv = process.env.NODE_ENV === 'development';
     return {
       sameSite: 'lax',
-      secure: !localEnv,
+      secure: true,
       httpOnly: true,
       maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
     };
