@@ -1,5 +1,6 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { HashingService } from 'src/shared/services/hashing/hashing.service';
+import { UserEntity } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/services/user.service';
 import { CredentialsTokens } from '../interfaces/credentials-token';
 import { TokenService } from './token.service';
@@ -12,19 +13,12 @@ export class AuthService {
     private readonly tokenService: TokenService,
   ) {}
 
-  public async validateUser(username: string, rawPassword: string) {
-    const user = await this.userService.getUserByUserName(username);
-    if (!user) {
-      return null;
-    }
+  public isUserExist(username: string): Promise<UserEntity | undefined> {
+    return this.userService.getUserByUserName(username);
+  }
 
-    const isPasswordValid = this.hashingService.isPasswordValid(rawPassword, user.hashedPassword);
-    if (!isPasswordValid) {
-      return null;
-    }
-
-    const { hashedPassword, ...result } = user;
-    return result;
+  public async validateUser(user: UserEntity, rawPassword: string) {
+    return this.hashingService.isPasswordValid(rawPassword, user.hashedPassword);
   }
 
   public async login(userId: string): Promise<CredentialsTokens> {
@@ -45,26 +39,28 @@ export class AuthService {
     }
   }
 
-  public async renewAccessToken(signedRefreshToken: string): Promise<[string, CredentialsTokens]> {
+  public async renewAccessToken(
+    signedRefreshToken: string,
+  ): Promise<[string, CredentialsTokens] | undefined> {
     const isRefreshTokenValid = this.tokenService.isTokenValid(signedRefreshToken, true);
     if (!isRefreshTokenValid) {
-      throw new UnauthorizedException('Invalid Refresh Token');
+      return undefined;
     }
 
     const refreshTokenId = this.tokenService.getRefreshTokenId(signedRefreshToken);
     const refreshToken = await this.tokenService.getRefreshTokenById(refreshTokenId);
 
     if (!refreshToken) {
-      throw new UnauthorizedException('Refresh Token not found');
+      return undefined;
     }
 
     if (this.tokenService.isRefreshTokenInvalidated(refreshToken)) {
-      throw new UnauthorizedException('Refresh Token invalidated');
+      return undefined;
     }
 
     if (this.tokenService.isRefreshTokenExpired(refreshToken)) {
       await this.tokenService.invalidateRefreshToken(refreshToken);
-      throw new UnauthorizedException('Refresh Token Expired');
+      return undefined;
     }
 
     const { userId } = refreshToken;

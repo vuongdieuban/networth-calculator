@@ -57,12 +57,15 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
   ): Promise<void> {
     const existedRefreshToken = this.extractRefreshTokenFromCookie(request);
-    const [userId, { refreshToken, accessToken }] = await this.authService.renewAccessToken(
-      existedRefreshToken,
-    );
+    const credentials = await this.authService.renewAccessToken(existedRefreshToken);
+
+    if (!credentials) {
+      throw new UnauthorizedException('Invalid RefreshToken. Could not get AccessToken');
+    }
+
+    const [userId, { refreshToken, accessToken }] = credentials;
 
     const cookieOptions = this.getCookieOptions();
-
     response.cookie(this.REFRESH_TOKEN_COOKIE_NAME, refreshToken, cookieOptions);
     response.json({ accessToken, userId });
   }
