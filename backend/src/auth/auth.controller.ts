@@ -54,7 +54,7 @@ export class AuthController {
     const cookieOptions = this.getCookieOptions();
 
     response.clearCookie(this.REFRESH_TOKEN_COOKIE_NAME, { ...cookieOptions, maxAge: 0 });
-    response.send('logout success');
+    response.json({ message: 'logout success' });
   }
 
   @Post('/renew-token')
