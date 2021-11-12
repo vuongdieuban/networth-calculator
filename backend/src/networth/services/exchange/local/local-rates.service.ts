@@ -1,4 +1,4 @@
-import { CurrencyType } from 'src/shared/constants/currency-type.enum';
+import { CurrencyType } from 'src/currency/constants/currency-type.enum';
 import { ExchangeService } from '../exchange.service';
 import * as MockData from './mock-rates-data.json';
 

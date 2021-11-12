@@ -18,16 +18,17 @@ import { TokenService } from './auth/services/token.service';
 import { UserService } from './user/services/user.service';
 import { AssetEntity } from './networth/entities/asset.entity';
 import { LiabilityEntity } from './networth/entities/liability.entity';
-import { UserSelectedCurrencyEntity } from './networth/entities/user-selected-currency.entity';
+import { UserSelectedCurrencyEntity } from './currency/entities/user-selected-currency.entity';
 import { ExchangeService } from './networth/services/exchange/exchange.service';
 import { LiabilityService } from './networth/services/liability/liability.service';
 import { AssetService } from './networth/services/asset/asset.service';
 import { NetworthService } from './networth/services/networth/networth.service';
-import { SelectedCurrencyService } from './networth/services/selected-currency/selected-currency.service';
 import { exchangeProviderFactory } from './networth/services/exchange/exchange-provider-factory';
 import { TasksSchedulingService } from './shared/services/task-scheduling/task-scheduling.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ViewAdapterService } from './networth/services/view-adapter/view-adapter.service';
+import { CurrencyController } from './currency/currency.controller';
+import { SelectedCurrencyService } from './currency/services/selected-currency.service';
 
 @Module({
   imports: [
@@ -44,7 +45,7 @@ import { ViewAdapterService } from './networth/services/view-adapter/view-adapte
     HttpModule,
     PassportModule,
   ],
-  controllers: [HealthController, NetworthController, AuthController],
+  controllers: [HealthController, NetworthController, AuthController, CurrencyController],
   providers: [
     {
       provide: APP_INTERCEPTOR,
