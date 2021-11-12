@@ -17,13 +17,13 @@ export class AuthGuard implements CanActivate {
       return of(true);
     }
     // attempt to get access token thru refresh token in cookie
-    return this.authService.renewAccessToken().pipe(
+    return this.authService.renewToken().pipe(
       map((userId) => true),
-      catchError((error) => this.handleRenewAccessTokenError(error))
+      catchError((error) => this.handleRenewTokenError(error))
     );
   }
 
-  private handleRenewAccessTokenError(error: Error) {
+  private handleRenewTokenError(error: Error) {
     if (error instanceof UserUnauthenticatedError) {
       return of(this.router.parseUrl('/login'));
     }

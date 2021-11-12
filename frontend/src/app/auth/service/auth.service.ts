@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { UserCredentialsResponse } from '../dtos/user-credentials-response.dto';
+import { TokenCredentialsInfo } from '../dtos/token-credentials-info.dto';
 import { catchError, map, tap } from 'rxjs/operators';
 import {
   UnknownAuthenticationError,
@@ -15,29 +15,24 @@ import {
 })
 export class AuthService {
   private readonly BACKEND_BASE_URL = environment.backendBaseUrl;
-  private _accessToken: string = '';
-  private _userId: string = '';
+  private _tokenCredentialsInfo: TokenCredentialsInfo | undefined;
 
   constructor(private readonly httpService: HttpClient) {}
 
-  public get userId() {
-    return this._userId;
-  }
-
-  public get accessToken() {
-    return this._accessToken;
+  public get tokenCredentials() {
+    return this._tokenCredentialsInfo;
   }
 
   public isUserAuthenticated(): boolean {
-    return this._userId.length > 0;
+    return Boolean(this._tokenCredentialsInfo);
   }
 
-  public renewAccessToken() {
+  public renewToken() {
     const url = new URL('auth/renew-token', this.BACKEND_BASE_URL).toString();
-    return this.httpService.post<UserCredentialsResponse>(url, {}).pipe(
-      tap((tokenData) => this.extractAndSaveTokenData(tokenData)),
-      map((tokenData) => tokenData.userId),
-      catchError((error: HttpErrorResponse) => this.handleRenewAccessTokenErrorResponse(error))
+    return this.httpService.post<TokenCredentialsInfo>(url, {}).pipe(
+      tap((credentials) => this.extractAndSaveTokenCredentials(credentials)),
+      map((credentials) => credentials.userId),
+      catchError((error: HttpErrorResponse) => this.handlerenewTokenErrorResponse(error))
     );
   }
 
@@ -51,9 +46,9 @@ export class AuthService {
 
   public login(username: string, password: string): Observable<string> {
     const url = new URL('auth/login', this.BACKEND_BASE_URL).toString();
-    return this.httpService.post<UserCredentialsResponse>(url, { username, password }).pipe(
-      tap((tokenData) => this.extractAndSaveTokenData(tokenData)),
-      map((tokenData) => tokenData.userId),
+    return this.httpService.post<TokenCredentialsInfo>(url, { username, password }).pipe(
+      tap((credentials) => this.extractAndSaveTokenCredentials(credentials)),
+      map((credentials) => credentials.userId),
       catchError((error: HttpErrorResponse) => this.handleLoginErrorResponse(error))
     );
   }
@@ -67,9 +62,8 @@ export class AuthService {
     this.clearAccessTokenAndUserId();
   }
 
-  private extractAndSaveTokenData(tokenData: UserCredentialsResponse): void {
-    this._accessToken = tokenData.accessToken;
-    this._userId = tokenData.userId;
+  private extractAndSaveTokenCredentials(crendentials: TokenCredentialsInfo): void {
+    this._tokenCredentialsInfo = crendentials;
   }
 
   private handleLoginErrorResponse(error: HttpErrorResponse): Observable<never> {
@@ -84,11 +78,11 @@ export class AuthService {
     return throwError(new UnknownAuthenticationError(error.message));
   }
 
-  private handleRenewAccessTokenErrorResponse(error: HttpErrorResponse): Observable<never> {
+  private handlerenewTokenErrorResponse(error: HttpErrorResponse): Observable<never> {
     if (error.status === 401) {
       return throwError(new UserUnauthenticatedError());
     }
-    console.error('RenewAccessTokenError', error);
+    console.error('renewTokenError', error);
     return throwError(new UnknownAuthenticationError(error.message));
   }
 
@@ -98,7 +92,6 @@ export class AuthService {
   }
 
   private clearAccessTokenAndUserId(): void {
-    this._userId = '';
-    this._accessToken = '';
+    this._tokenCredentialsInfo = undefined;
   }
 }
