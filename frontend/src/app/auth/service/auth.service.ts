@@ -1,52 +1,93 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, throwError, of } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { RenewTokenResponse } from '../dtos/renew-token-response.dto';
-import { catchError, map, take, tap } from 'rxjs/operators';
+import { UserCredentialsResponse } from '../dtos/user-credentials-response.dto';
+import { catchError, map, tap } from 'rxjs/operators';
+import {
+  UnknownAuthenticationError,
+  UserNotFoundError,
+  UserUnauthenticatedError,
+} from '../errors/auth.error';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private readonly BACKEND_BASE_URL = environment.backendBaseUrl;
-  private accessToken: string = '';
-  private userId: string = '';
+  private _accessToken: string = '';
+  private _userId: string = '';
 
   constructor(private readonly httpService: HttpClient) {}
 
-  public isAuthenticated(): Observable<boolean> {
-    return this.getAccessToken().pipe(
-      map((tokenData) => (tokenData ? true : false)),
-      catchError((_) => of(false))
-    );
+  public get userId() {
+    return this._userId;
   }
 
-  public register() {}
+  public get accessToken() {
+    return this._accessToken;
+  }
 
-  public login() {}
-
-  public logout() {}
-
-  private getAccessToken(): Observable<RenewTokenResponse | undefined> {
-    const url = `${this.BACKEND_BASE_URL}/auth/renew-token`;
-    return this.httpService.post<RenewTokenResponse>(url, {}).pipe(
-      take(1),
+  public renewAccessToken(): Observable<string> {
+    const url = new URL('auth/renew-token', this.BACKEND_BASE_URL).toString();
+    return this.httpService.post<UserCredentialsResponse>(url, {}).pipe(
       tap((tokenData) => this.extractAndSaveTokenData(tokenData)),
-      catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          return of(undefined);
-        }
-        return throwError(error);
-      })
+      map((tokenData) => tokenData.userId),
+      catchError((error: HttpErrorResponse) => this.handleRenewAccessTokenErrorResponse(error))
     );
   }
 
-  private extractAndSaveTokenData(tokenData: RenewTokenResponse | undefined) {
-    if (!tokenData) {
-      return;
+  public register(username: string, password: string): Observable<string> {
+    const url = new URL('auth/register', this.BACKEND_BASE_URL).toString();
+    return this.httpService.post<{ userId: string }>(url, { username, password }).pipe(
+      map(({ userId }) => userId),
+      catchError((error: HttpErrorResponse) => this.handleRegisterErrorResponse(error))
+    );
+  }
+
+  public login(username: string, password: string): Observable<string> {
+    const url = new URL('auth/login', this.BACKEND_BASE_URL).toString();
+    return this.httpService.post<UserCredentialsResponse>(url, { username, password }).pipe(
+      tap((tokenData) => this.extractAndSaveTokenData(tokenData)),
+      map((tokenData) => tokenData.userId),
+      catchError((error: HttpErrorResponse) => this.handleLoginErrorResponse(error))
+    );
+  }
+
+  public logout(): Observable<void> {
+    const url = new URL('auth/logout', this.BACKEND_BASE_URL).toString();
+    return this.httpService.post<void>(url, {}).pipe(tap(() => this.clearAccessTokenAndUserId()));
+  }
+
+  private extractAndSaveTokenData(tokenData: UserCredentialsResponse): void {
+    this._accessToken = tokenData.accessToken;
+    this._userId = tokenData.userId;
+  }
+
+  private handleLoginErrorResponse(error: HttpErrorResponse): Observable<never> {
+    const { status } = error;
+    if (status === 404) {
+      return throwError(new UserNotFoundError());
     }
-    this.accessToken = tokenData.accessToken;
-    this.userId = tokenData.userId;
+    if (status === 401) {
+      return throwError(new UserUnauthenticatedError());
+    }
+    return throwError(new UnknownAuthenticationError(error.message));
+  }
+
+  private handleRenewAccessTokenErrorResponse(error: HttpErrorResponse): Observable<never> {
+    if (error.status === 401) {
+      return throwError(new UserUnauthenticatedError());
+    }
+    return throwError(new UnknownAuthenticationError(error.message));
+  }
+
+  private handleRegisterErrorResponse(error: HttpErrorResponse): Observable<never> {
+    return throwError(new UnknownAuthenticationError(error.message));
+  }
+
+  private clearAccessTokenAndUserId(): void {
+    this._userId = '';
+    this._accessToken = '';
   }
 }

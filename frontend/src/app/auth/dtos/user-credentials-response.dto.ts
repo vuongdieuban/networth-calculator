@@ -1,4 +1,4 @@
-export interface RenewTokenResponse {
+export interface UserCredentialsResponse {
   accessToken: string;
   userId: string;
 }
