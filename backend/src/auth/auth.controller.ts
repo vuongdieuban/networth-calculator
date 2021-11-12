@@ -29,12 +29,18 @@ export class AuthController {
   ): Promise<void> {
     // attached and validated by LocalAuthGuard
     const user = request.user as ValidatedUser;
-    const { accessToken, refreshToken } = await this.authService.login(user.userId);
+    const { accessToken, refreshToken, accessTokenExpiredTs, refreshTokenExpiredTs } =
+      await this.authService.login(user.userId);
 
     const cookieOptions = this.getCookieOptions();
 
     response.cookie(this.REFRESH_TOKEN_COOKIE_NAME, refreshToken, cookieOptions);
-    response.json({ accessToken, userId: user.userId });
+    response.json({
+      userId: user.userId,
+      accessToken,
+      accessTokenExpiredTs,
+      refreshTokenExpiredTs,
+    });
   }
 
   @Post('/logout')
