@@ -6,11 +6,11 @@ import {
 } from 'src/networth/dtos/calculate-networth-request.dto';
 import { AssetEntity } from 'src/networth/entities/asset.entity';
 import { LiabilityEntity } from 'src/networth/entities/liability.entity';
-import { ExchangeService } from '../exchange/exchange.service';
+import { ExchangeService } from '../../../currency/services/exchange/exchange.service';
 import { AssetService } from '../asset/asset.service';
 import { LiabilityService } from '../liability/liability.service';
 import { CurrencyType } from 'src/currency/constants/currency-type.enum';
-import { SelectedCurrencyService } from 'src/currency/services/selected-currency.service';
+import { SelectedCurrencyService } from 'src/currency/services/selected-currency/selected-currency.service';
 
 export interface NetworthValues {
   totalNetworth: number;
