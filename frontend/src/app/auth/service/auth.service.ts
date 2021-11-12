@@ -1,6 +1,6 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { from, Observable, of, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { UserCredentialsResponse } from '../dtos/user-credentials-response.dto';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -9,7 +9,6 @@ import {
   UserNotFoundError,
   UserUnauthenticatedError,
 } from '../errors/auth.error';
-import axios from 'axios';
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +30,7 @@ export class AuthService {
 
   public renewAccessToken() {
     const url = new URL('auth/renew-token', this.BACKEND_BASE_URL).toString();
-    return this.httpService.post<UserCredentialsResponse>(url, {}, { withCredentials: true }).pipe(
+    return this.httpService.post<UserCredentialsResponse>(url, {}).pipe(
       tap((tokenData) => this.extractAndSaveTokenData(tokenData)),
       map((tokenData) => tokenData.userId),
       catchError((error: HttpErrorResponse) => this.handleRenewAccessTokenErrorResponse(error))
@@ -48,13 +47,11 @@ export class AuthService {
 
   public login(username: string, password: string): Observable<string> {
     const url = new URL('auth/login', this.BACKEND_BASE_URL).toString();
-    return this.httpService
-      .post<UserCredentialsResponse>(url, { username, password }, { withCredentials: true })
-      .pipe(
-        tap((tokenData) => this.extractAndSaveTokenData(tokenData)),
-        map((tokenData) => tokenData.userId),
-        catchError((error: HttpErrorResponse) => this.handleLoginErrorResponse(error))
-      );
+    return this.httpService.post<UserCredentialsResponse>(url, { username, password }).pipe(
+      tap((tokenData) => this.extractAndSaveTokenData(tokenData)),
+      map((tokenData) => tokenData.userId),
+      catchError((error: HttpErrorResponse) => this.handleLoginErrorResponse(error))
+    );
   }
 
   public logout(): Observable<void> {
