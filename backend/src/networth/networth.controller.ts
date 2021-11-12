@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Post, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ValidatedUser } from 'src/auth/interfaces/validated-user';
@@ -25,7 +25,7 @@ export class NetworthController {
     const userId = this.extractUserIdFromRequest(req);
     const profile = await this.networthService.getNetworthProfile(userId);
     if (!profile) {
-      throw new BadRequestException(this.missingProfileErrorMsg);
+      throw new NotFoundException(this.missingProfileErrorMsg);
     }
     return this.viewAdapter.formatNetworthProfileToViewResponse(profile);
   }
@@ -48,7 +48,7 @@ export class NetworthController {
       payload,
     );
     if (!updatedProfile) {
-      throw new BadRequestException(this.missingProfileErrorMsg);
+      throw new NotFoundException(this.missingProfileErrorMsg);
     }
     return this.viewAdapter.formatNetworthProfileToViewResponse(updatedProfile);
   }

@@ -93,9 +93,9 @@ export class AuthController {
     const localEnv = process.env.NODE_ENV === 'development';
     return {
       sameSite: 'lax',
-      secure: true,
+      secure: !localEnv,
       httpOnly: true,
-      maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
+      maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day,
     };
   }
 }
