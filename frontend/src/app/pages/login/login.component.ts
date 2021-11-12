@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
-import { UserNotFoundError, UserUnauthenticatedError } from 'src/app/auth/errors/auth.error';
-import { AuthService } from 'src/app/auth/service/auth.service';
+import { UserNotFoundError, UserUnauthenticatedError } from 'src/app/shared/auth/errors/auth.error';
+import { AuthService } from 'src/app/shared/auth/service/auth.service';
 import { UserCredentialsInput } from './interfaces/user-credentials-input.interface';
 
 type FormName = 'Login' | 'Register';
