@@ -13,9 +13,9 @@ export class NetworthComponent implements OnInit {
   ngOnInit(): void {}
 
   public handleLogoutClick() {
-    this.authService.logout().subscribe(() => {
-      console.log('go back to login page');
-      this.router.navigate(['login']);
-    });
+    this.authService.logout().subscribe(
+      () => this.router.navigate(['login']),
+      (err) => this.router.navigate(['error'])
+    );
   }
 }
