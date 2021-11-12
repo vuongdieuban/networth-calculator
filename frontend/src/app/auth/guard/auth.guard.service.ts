@@ -9,11 +9,11 @@ import { AuthService } from '../service/auth.service';
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  constructor(public authService: AuthService, public router: Router) {}
+  constructor(private readonly authService: AuthService, private readonly router: Router) {}
 
   public canActivate(): Observable<boolean | UrlTree> {
     return this.authService.renewAccessToken().pipe(
-      map((userId) => this.router.parseUrl(`/networth?userId=${userId}`)),
+      map((userId) => true),
       catchError((error) => this.handleRenewAccessTokenError(error))
     );
   }
