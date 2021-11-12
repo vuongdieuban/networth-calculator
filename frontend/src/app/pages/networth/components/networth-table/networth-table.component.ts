@@ -3,10 +3,10 @@ import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/fo
 import { mockNetworthData } from '../../dtos/mock-networth-data';
 import {
   CurrencyType,
-  NetworthViewResponseDto,
+  NetworthViewResponse,
   ViewAssetCategories,
   ViewLiabilityCategories,
-} from '../../dtos/networth-view-data.interface';
+} from '../../dtos/networth-view-data.dto';
 
 @Component({
   selector: 'app-networth-table',
@@ -30,7 +30,7 @@ export class NetworthTableComponent implements OnInit {
 
   public assets: ViewAssetCategories = mockNetworthData.assets;
   public liabilities: ViewLiabilityCategories = mockNetworthData.liabilities;
-  public networthData: NetworthViewResponseDto = mockNetworthData as NetworthViewResponseDto;
+  public networthData: NetworthViewResponse = mockNetworthData as NetworthViewResponse;
 
   ngOnInit() {
     const formGroup: Record<string, AbstractControl> = {};

@@ -35,7 +35,7 @@ export class ViewLiabilityCategories {
   longTermDebts: ViewLiabilityTypeDetails[];
 }
 
-export class NetworthViewResponseDto {
+export class NetworthViewResponse {
   selectedCurrency: CurrencyType;
   totalNetworth: string;
   totalLiabilities: string;

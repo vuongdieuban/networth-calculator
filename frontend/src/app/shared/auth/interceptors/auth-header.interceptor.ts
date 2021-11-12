@@ -16,7 +16,11 @@ export class AuthHeaderInterceptor implements HttpInterceptor {
       return next.handle(request);
     }
 
-    request.headers.set('Authorization', `Bearer ${tokenCredentials.accessToken}`);
+    request = request.clone({
+      setHeaders: {
+        Authorization: `Bearer ${tokenCredentials.accessToken}`,
+      },
+    });
     return next.handle(request);
   }
 }
