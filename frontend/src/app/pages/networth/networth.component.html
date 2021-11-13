@@ -1,2 +1,7 @@
 <button mat-raised-button color="primary" (click)="handleLogoutClick()">Logout</button>
-<app-networth-table></app-networth-table>
+<app-networth-table
+  *ngIf="networthViewData"
+  [networthViewData]="networthViewData"
+  [supportedCurrencies]="supportedCurrencies"
+  [selectedCurrency]="selectedCurrency"
+></app-networth-table>

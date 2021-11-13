@@ -1,12 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
-import { mockNetworthData } from '../../dtos/mock-networth-data';
+import { CalculateNetworthRequest } from '../../dtos/calculate-networth-request.dto';
 import {
-  CurrencyType,
-  NetworthViewResponse,
-  ViewAssetCategories,
-  ViewLiabilityCategories,
-} from '../../dtos/networth-view-data.dto';
+  AssetViewDetails,
+  LiabilityViewDetails,
+  NetworthViewModel,
+} from '../../view-models/networth-view.model';
 
 @Component({
   selector: 'app-networth-table',
@@ -14,45 +13,68 @@ import {
   styleUrls: ['./networth-table.component.scss'],
 })
 export class NetworthTableComponent implements OnInit {
+  @Input() selectedCurrency: string = '';
+  @Input() supportedCurrencies: string[] = [];
+  @Input() networthViewData: NetworthViewModel;
+
+  @Output() calculateNetworthSubmitted = new EventEmitter<CalculateNetworthRequest>();
+
+  public currentViewCurrency = '';
+
+  public form: FormGroup;
+
   private readonly currencyPattern = /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/;
   private readonly formFieldValidators = [
     Validators.required,
     Validators.pattern(this.currencyPattern),
   ];
 
-  public form = new FormGroup({
-    chequing: new FormControl('', this.formFieldValidators),
-    savingsForTaxes: new FormControl('', this.formFieldValidators),
-  });
-
-  // should fetch currencies from backend, remove currency type enum.
-  public currencies = Object.values(CurrencyType) as string[];
-
-  public assets: ViewAssetCategories = mockNetworthData.assets;
-  public liabilities: ViewLiabilityCategories = mockNetworthData.liabilities;
-  public networthData: NetworthViewResponse = mockNetworthData as NetworthViewResponse;
-
   ngOnInit() {
-    const formGroup: Record<string, AbstractControl> = {};
-
-    this.assets.cashAndInvestments.forEach((asset) => {
-      formGroup[asset.fieldName] = new FormControl(asset.amount, this.formFieldValidators);
-    });
-    this.assets.longTermAssets.forEach((asset) => {
-      formGroup[asset.fieldName] = new FormControl(asset.amount, this.formFieldValidators);
-    });
-    this.liabilities.longTermDebts.forEach((asset) => {
-      formGroup[asset.fieldName] = new FormControl(asset.amount, this.formFieldValidators);
-    });
-    this.liabilities.shortermLiabilities.forEach((asset) => {
-      formGroup[asset.fieldName] = new FormControl(asset.amount, this.formFieldValidators);
-    });
-
-    this.form = new FormGroup(formGroup);
+    this.currentViewCurrency = this.selectedCurrency;
+    console.log('current view currency', this.currentViewCurrency);
+    if (this.networthViewData) {
+      this.generateFormGroupFromNetworthViewModel();
+    }
   }
 
   public onSubmit() {
-    console.log('Chequing', this.form.get('chequing')?.value);
-    console.log('FORM VALUES', this.form.value);
+    const request = {} as CalculateNetworthRequest;
+    request.fromCurrency = 'CAD';
+    request.toCurrency = 'USD';
+
+    this.calculateNetworthSubmitted.emit(request);
+  }
+
+  private generateFormGroupFromNetworthViewModel() {
+    const formGroup: Record<string, AbstractControl> = {};
+    this.generateFormGroupFromAssetsViewModel(formGroup);
+    this.generateFormGroupFromLiabilitiesViewModel(formGroup);
+    this.form = new FormGroup(formGroup);
+  }
+
+  private generateFormGroupFromAssetsViewModel(formGroup: Record<string, AbstractControl>) {
+    const { assets } = this.networthViewData;
+
+    assets.cashAndInvestments.forEach((asset) => {
+      formGroup[asset.fieldName] = new FormControl(asset.amount, this.formFieldValidators);
+    });
+    assets.longTermAssets.forEach((asset) => {
+      formGroup[asset.fieldName] = new FormControl(asset.amount, this.formFieldValidators);
+    });
+  }
+
+  private generateFormGroupFromLiabilitiesViewModel(formGroup: Record<string, AbstractControl>) {
+    const { liabilities } = this.networthViewData;
+
+    liabilities.longTermDebts.forEach((liability) => {
+      formGroup[liability.fieldName] = new FormControl(liability.amount, this.formFieldValidators);
+    });
+    liabilities.shortermLiabilities.forEach((liability) => {
+      formGroup[liability.fieldName] = new FormControl(liability.amount, this.formFieldValidators);
+    });
+  }
+
+  private getFormFieldValue(field: string) {
+    return parseFloat(this.form.value[field]);
   }
 }
