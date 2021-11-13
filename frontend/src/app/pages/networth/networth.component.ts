@@ -6,7 +6,7 @@ import { AuthService } from 'src/app/shared/auth/service/auth.service';
 import { CalculateNetworthRequest } from './dtos/calculate-networth-request.dto';
 import { UserSelectedCurrency } from './dtos/user-selected-currency.dto';
 import { NetworthService } from './services/networth/networth.service';
-import { NetworthViewModel } from './view-models/networth-view.model';
+import { NetworthDisplayViewModel } from './models/networth-display-view.model';
 
 @Component({
   selector: 'app-networth',
@@ -16,7 +16,7 @@ import { NetworthViewModel } from './view-models/networth-view.model';
 export class NetworthComponent implements OnInit {
   public selectedCurrency = '';
   public supportedCurrencies: string[] = [];
-  public networthViewData: NetworthViewModel;
+  public networthViewData: NetworthDisplayViewModel;
 
   constructor(
     private readonly networthService: NetworthService,
@@ -35,9 +35,8 @@ export class NetworthComponent implements OnInit {
     );
   }
 
-  public handleCalculateNetworthSubmit(request: CalculateNetworthRequest) {
+  public handleCalculateNetworthSubmitted(request: CalculateNetworthRequest) {
     this.networthService.calculateNetworthProfile(request).subscribe((profile) => {
-      console.log('Updated profile', profile);
       this.networthViewData = profile;
       this.selectedCurrency = profile.selectedCurrency;
     });
@@ -61,7 +60,7 @@ export class NetworthComponent implements OnInit {
     this.selectedCurrency = selectedCurrency.selectedCurrency;
   }
 
-  private extractAndSaveNetworthProfile(profile: NetworthViewModel) {
+  private extractAndSaveNetworthProfile(profile: NetworthDisplayViewModel) {
     this.networthViewData = profile;
   }
 

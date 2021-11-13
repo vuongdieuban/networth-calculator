@@ -3,15 +3,19 @@
 
   <mat-form-field>
     <mat-label>Supported Currencies</mat-label>
-    <mat-select [formControl]="currencyFormControl">
-      <mat-option *ngFor="let currency of supportedCurrencies" [value]="currentViewCurrency">
+    <mat-select [formControl]="currencyFormControl" [value]="selectedCurrency">
+      <mat-option *ngFor="let currency of supportedCurrencies" [value]="currency">
         {{ currency }}
       </mat-option>
     </mat-select>
   </mat-form-field>
 
-  <form (ngSubmit)="onSubmit()" [formGroup]="networthForm" *ngIf="networthViewData">
-    <button mat-raised-button color="primary">Calculate</button>
+  <form
+    (ngSubmit)="onCalculateNetworthSubmit()"
+    [formGroup]="networthForm"
+    *ngIf="networthViewData"
+  >
+    <button mat-raised-button color="primary" [disabled]="!networthForm.valid">Calculate</button>
 
     <h3>Assets</h3>
     <table>

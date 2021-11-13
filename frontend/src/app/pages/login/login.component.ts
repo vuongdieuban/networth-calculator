@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { UserNotFoundError, UserUnauthenticatedError } from 'src/app/shared/auth/errors/auth.error';
 import { AuthService } from 'src/app/shared/auth/service/auth.service';
-import { UserCredentialsInput } from './interfaces/user-credentials-input.interface';
+import { UserCredentialsInput } from './models/user-credentials-input.model';
 
 type FormName = 'Login' | 'Register';
 

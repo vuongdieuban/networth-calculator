@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { NetworthViewResponseDto } from '../../dtos/networth-view-response.dto';
-import { NetworthViewModel } from '../../view-models/networth-view.model';
+import { NetworthDisplayViewModel } from '../../models/networth-display-view.model';
 
 @Injectable({
   providedIn: 'root',
@@ -10,11 +10,11 @@ export class NetworthViewAdapterService {
 
   public convertNetworthApiResponseToViewModel(
     apiResponse: NetworthViewResponseDto
-  ): NetworthViewModel {
+  ): NetworthDisplayViewModel {
     const { assets, liabilities, totalAssets, totalLiabilities, totalNetworth, selectedCurrency } =
       apiResponse;
 
-    const view: NetworthViewModel = {
+    const view: NetworthDisplayViewModel = {
       totalAssets,
       totalLiabilities,
       totalNetworth,

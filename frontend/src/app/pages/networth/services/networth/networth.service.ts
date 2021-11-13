@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 import { CalculateNetworthRequest } from '../../dtos/calculate-networth-request.dto';
 import { NetworthViewResponseDto } from '../../dtos/networth-view-response.dto';
 import { UserSelectedCurrency } from '../../dtos/user-selected-currency.dto';
-import { NetworthViewModel } from '../../view-models/networth-view.model';
+import { NetworthDisplayViewModel } from '../../models/networth-display-view.model';
 import { NetworthViewAdapterService } from '../view-adapter/networth-view-adapter.service';
 
 @Injectable({
@@ -28,7 +28,7 @@ export class NetworthService {
       .pipe(catchError((error: HttpErrorResponse) => this.handleHttpError(error)));
   }
 
-  public getOrCreateNetworthProfile(): Observable<NetworthViewModel> {
+  public getOrCreateNetworthProfile(): Observable<NetworthDisplayViewModel> {
     const url = new URL('/networth', this.BACKEND_BASE_URL).toString();
     return this.httpService.get<NetworthViewResponseDto>(url).pipe(
       map((response) => this.viewAdapter.convertNetworthApiResponseToViewModel(response)),
@@ -38,7 +38,7 @@ export class NetworthService {
 
   public calculateNetworthProfile(
     payload: CalculateNetworthRequest
-  ): Observable<NetworthViewModel> {
+  ): Observable<NetworthDisplayViewModel> {
     const url = new URL('/networth/calculate', this.BACKEND_BASE_URL).toString();
     return this.httpService.post<NetworthViewResponseDto>(url, payload).pipe(
       map((response) => this.viewAdapter.convertNetworthApiResponseToViewModel(response)),

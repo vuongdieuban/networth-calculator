@@ -6,7 +6,7 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { UserCredentialsInput } from '../../interfaces/user-credentials-input.interface';
+import { UserCredentialsInput } from '../../models/user-credentials-input.model';
 
 @Component({
   selector: 'app-register-form',
