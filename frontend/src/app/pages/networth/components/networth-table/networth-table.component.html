@@ -2,15 +2,15 @@
   <h3>Networth: {{ networthViewData.totalNetworth | currency }}</h3>
 
   <mat-form-field>
-    <mat-label>SupportedCurrencies</mat-label>
-    <mat-select>
+    <mat-label>Supported Currencies</mat-label>
+    <mat-select [formControl]="currencyFormControl">
       <mat-option *ngFor="let currency of supportedCurrencies" [value]="currentViewCurrency">
         {{ currency }}
       </mat-option>
     </mat-select>
   </mat-form-field>
 
-  <form (ngSubmit)="onSubmit()" [formGroup]="form" *ngIf="networthViewData">
+  <form (ngSubmit)="onSubmit()" [formGroup]="networthForm" *ngIf="networthViewData">
     <button mat-raised-button color="primary">Calculate</button>
 
     <h3>Assets</h3>

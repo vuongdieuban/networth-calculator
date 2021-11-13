@@ -20,8 +20,8 @@ export class NetworthTableComponent implements OnInit {
   @Output() calculateNetworthSubmitted = new EventEmitter<CalculateNetworthRequest>();
 
   public currentViewCurrency = '';
-
-  public form: FormGroup;
+  public networthForm: FormGroup;
+  public currencyFormControl: FormControl;
 
   private readonly currencyPattern = /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/;
   private readonly formFieldValidators = [
@@ -30,10 +30,12 @@ export class NetworthTableComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.currentViewCurrency = this.selectedCurrency;
-    console.log('current view currency', this.currentViewCurrency);
     if (this.networthViewData) {
       this.generateFormGroupFromNetworthViewModel();
+    }
+    if (this.selectedCurrency) {
+      this.currentViewCurrency = this.selectedCurrency;
+      this.currencyFormControl = new FormControl(this.currentViewCurrency);
     }
   }
 
@@ -49,7 +51,8 @@ export class NetworthTableComponent implements OnInit {
     const formGroup: Record<string, AbstractControl> = {};
     this.generateFormGroupFromAssetsViewModel(formGroup);
     this.generateFormGroupFromLiabilitiesViewModel(formGroup);
-    this.form = new FormGroup(formGroup);
+
+    this.networthForm = new FormGroup(formGroup);
   }
 
   private generateFormGroupFromAssetsViewModel(formGroup: Record<string, AbstractControl>) {
@@ -75,6 +78,6 @@ export class NetworthTableComponent implements OnInit {
   }
 
   private getFormFieldValue(field: string) {
-    return parseFloat(this.form.value[field]);
+    return parseFloat(this.networthForm.value[field]);
   }
 }
