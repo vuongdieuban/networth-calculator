@@ -1,5 +1,8 @@
-<ng-container *ngIf="networthViewData">
-  <h3>Networth: {{ networthViewData.totalNetworth | currency }}</h3>
+<div *ngIf="networthViewData" class="networth-profile">
+  <h3>
+    Networth: {{ networthViewData.totalNetworth | currency }}
+    {{ selectedCurrency }}
+  </h3>
 
   <mat-form-field>
     <mat-label>Supported Currencies</mat-label>
@@ -10,13 +13,16 @@
     </mat-select>
   </mat-form-field>
 
-  <form
-    (ngSubmit)="onCalculateNetworthSubmit()"
-    [formGroup]="networthForm"
-    *ngIf="networthViewData"
+  <button
+    mat-raised-button
+    color="primary"
+    [disabled]="!networthForm.valid"
+    (click)="onCalculateNetworthSubmit()"
   >
-    <button mat-raised-button color="primary" [disabled]="!networthForm.valid">Calculate</button>
+    Calculate
+  </button>
 
+  <form [formGroup]="networthForm" *ngIf="networthViewData">
     <h3>Assets</h3>
     <table>
       <tr>
@@ -31,6 +37,7 @@
             <input matInput [formControlName]="asset.fieldName" [value]="asset.amount" />
             <mat-placeholder class="placeholder">0.00</mat-placeholder>
           </mat-form-field>
+          {{ selectedCurrency }}
         </td>
       </tr>
       <br />
@@ -47,6 +54,7 @@
             <input matInput [formControlName]="asset.fieldName" [value]="asset.amount" />
             <mat-placeholder class="placeholder">0.00</mat-placeholder>
           </mat-form-field>
+          {{ selectedCurrency }}
         </td>
       </tr>
 
@@ -54,7 +62,10 @@
 
       <tr>
         <th>Total Assets</th>
-        <td>{{ networthViewData.totalAssets | currency }}</td>
+        <td>
+          {{ networthViewData.totalAssets | currency }}
+          {{ selectedCurrency }}
+        </td>
       </tr>
     </table>
 
@@ -77,6 +88,7 @@
             <input matInput [formControlName]="liability.fieldName" [value]="liability.amount" />
             <mat-placeholder class="placeholder">0.00</mat-placeholder>
           </mat-form-field>
+          {{ selectedCurrency }}
         </td>
       </tr>
 
@@ -96,6 +108,7 @@
             <input matInput [formControlName]="liability.fieldName" [value]="liability.amount" />
             <mat-placeholder class="placeholder">0.00</mat-placeholder>
           </mat-form-field>
+          {{ selectedCurrency }}
         </td>
       </tr>
 
@@ -104,8 +117,11 @@
       <tr>
         <th>Total Liabilities</th>
         <td></td>
-        <td>{{ networthViewData.totalLiabilities | currency }}</td>
+        <td>
+          {{ networthViewData.totalLiabilities | currency }}
+          {{ selectedCurrency }}
+        </td>
       </tr>
     </table>
   </form>
-</ng-container>
+</div>
