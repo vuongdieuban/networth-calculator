@@ -1,19 +1,20 @@
 <div *ngIf="networthViewData" class="networth-profile">
   <h3>
-    Networth: {{ networthViewData.totalNetworth | currency }}
-    {{ selectedCurrency }}
+    Networth: <span class="total-networth">{{ networthViewData.totalNetworth | currency }}</span>
+    <span class="selected-currency">{{ selectedCurrency }}</span>
   </h3>
 
   <mat-form-field>
     <mat-label>Supported Currencies</mat-label>
-    <mat-select [formControl]="currencyFormControl" [value]="selectedCurrency">
+    <mat-select id="currency-selector" [formControl]="currencyFormControl">
       <mat-option *ngFor="let currency of supportedCurrencies" [value]="currency">
-        {{ currency }}
+        <div class="currency-option">{{ currency }}</div>
       </mat-option>
     </mat-select>
   </mat-form-field>
 
   <button
+    class="calculate-button"
     mat-raised-button
     color="primary"
     [disabled]="!networthForm.valid"
@@ -34,10 +35,15 @@
         <td>
           $
           <mat-form-field class="input-field">
-            <input matInput [formControlName]="asset.fieldName" [value]="asset.amount" />
+            <input
+              matInput
+              [id]="asset.fieldName"
+              [formControlName]="asset.fieldName"
+              [value]="asset.amount"
+            />
             <mat-placeholder class="placeholder">0.00</mat-placeholder>
           </mat-form-field>
-          {{ selectedCurrency }}
+          <span class="selected-currency">{{ selectedCurrency }}</span>
         </td>
       </tr>
       <br />
@@ -51,10 +57,15 @@
         <td>
           $
           <mat-form-field class="input-field">
-            <input matInput [formControlName]="asset.fieldName" [value]="asset.amount" />
+            <input
+              matInput
+              [id]="asset.fieldName"
+              [formControlName]="asset.fieldName"
+              [value]="asset.amount"
+            />
             <mat-placeholder class="placeholder">0.00</mat-placeholder>
           </mat-form-field>
-          {{ selectedCurrency }}
+          <span class="selected-currency">{{ selectedCurrency }}</span>
         </td>
       </tr>
 
@@ -63,8 +74,10 @@
       <tr>
         <th>Total Assets</th>
         <td>
-          {{ networthViewData.totalAssets | currency }}
-          {{ selectedCurrency }}
+          <b>
+            <span class="total-assets">{{ networthViewData.totalAssets | currency }}</span>
+            <span class="selected-currency">{{ selectedCurrency }}</span>
+          </b>
         </td>
       </tr>
     </table>
@@ -85,10 +98,15 @@
         <td>
           $
           <mat-form-field class="input-field">
-            <input matInput [formControlName]="liability.fieldName" [value]="liability.amount" />
+            <input
+              matInput
+              [id]="liability.fieldName"
+              [formControlName]="liability.fieldName"
+              [value]="liability.amount"
+            />
             <mat-placeholder class="placeholder">0.00</mat-placeholder>
           </mat-form-field>
-          {{ selectedCurrency }}
+          <span class="selected-currency">{{ selectedCurrency }}</span>
         </td>
       </tr>
 
@@ -105,10 +123,15 @@
         <td>
           $
           <mat-form-field class="input-field">
-            <input matInput [formControlName]="liability.fieldName" [value]="liability.amount" />
+            <input
+              matInput
+              [id]="liability.fieldName"
+              [formControlName]="liability.fieldName"
+              [value]="liability.amount"
+            />
             <mat-placeholder class="placeholder">0.00</mat-placeholder>
           </mat-form-field>
-          {{ selectedCurrency }}
+          <span class="selected-currency">{{ selectedCurrency }}</span>
         </td>
       </tr>
 
@@ -118,8 +141,12 @@
         <th>Total Liabilities</th>
         <td></td>
         <td>
-          {{ networthViewData.totalLiabilities | currency }}
-          {{ selectedCurrency }}
+          <b>
+            <span class="total-liabilities">{{
+              networthViewData.totalLiabilities | currency
+            }}</span>
+            <span class="selected-currency">{{ selectedCurrency }}</span>
+          </b>
         </td>
       </tr>
     </table>

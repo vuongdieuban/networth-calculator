@@ -87,8 +87,8 @@ export class NetworthTableComponent implements OnInit, OnChanges {
     });
   }
 
-  private convertViewDataIntoCalculateNetworthRequest() {
-    const request = {} as CalculateNetworthRequest;
+  private convertViewDataIntoCalculateNetworthRequest(): CalculateNetworthRequest {
+    const request = new CalculateNetworthRequest();
     request.fromCurrency = this.selectedCurrency;
     request.toCurrency = this.currencyFormControl.value;
     request.assets = {
