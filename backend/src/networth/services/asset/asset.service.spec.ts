@@ -23,6 +23,10 @@ describe('AssetService', () => {
     assetRepo = module.get(getRepositoryToken(AssetEntity));
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('should be defined', () => {
     expect(service).toBeDefined();
   });

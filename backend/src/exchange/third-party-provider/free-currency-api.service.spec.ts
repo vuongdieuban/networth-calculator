@@ -23,6 +23,10 @@ describe('FreeCurrencyApiRatesProvider', () => {
     ratesService = new FreeCurrencyApiRatesProvider(httpServiceMock);
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('should be defined', () => {
     expect(ratesService).toBeDefined();
   });
