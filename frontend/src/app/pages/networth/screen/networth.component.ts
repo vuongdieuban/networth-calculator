@@ -3,10 +3,10 @@ import { Router } from '@angular/router';
 import { switchMap, tap } from 'rxjs/operators';
 import { UserUnauthenticatedError } from 'src/app/shared/auth/errors/auth.error';
 import { AuthService } from 'src/app/shared/auth/service/auth.service';
-import { CalculateNetworthRequest } from './dtos/calculate-networth-request.dto';
-import { UserSelectedCurrency } from './dtos/user-selected-currency.dto';
-import { NetworthService } from './services/networth/networth.service';
-import { NetworthDisplayViewModel } from './models/networth-display-view.model';
+import { CalculateNetworthRequest } from '../dtos/calculate-networth-request.dto';
+import { UserSelectedCurrency } from '../dtos/user-selected-currency.dto';
+import { NetworthDisplayViewModel } from '../models/networth-display-view.model';
+import { NetworthService } from '../services/networth/networth.service';
 
 @Component({
   selector: 'app-networth',
@@ -16,7 +16,7 @@ import { NetworthDisplayViewModel } from './models/networth-display-view.model';
 export class NetworthComponent implements OnInit {
   public selectedCurrency = '';
   public supportedCurrencies: string[] = [];
-  public networthViewData: NetworthDisplayViewModel;
+  public networthViewData: NetworthDisplayViewModel | undefined;
 
   constructor(
     private readonly networthService: NetworthService,

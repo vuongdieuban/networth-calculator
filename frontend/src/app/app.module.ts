@@ -11,8 +11,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './routes/app-routing.module';
-import { LoginComponent } from './pages/login/login.component';
-import { NetworthComponent } from './pages/networth/networth.component';
 import { AppComponent } from './app.component';
 import { LoginFormComponent } from './pages/login/components/login-form/login-form.component';
 import { RegisterFormComponent } from './pages/login/components/register-form/register-form.component';
@@ -20,6 +18,8 @@ import { NetworthTableComponent } from './pages/networth/components/networth-tab
 import { ErrorComponent } from './pages/error/error.component';
 import { AuthHeaderInterceptor } from './shared/auth/interceptors/auth-header.interceptor';
 import { AttachWithCredentialsHeaderInterceptor } from './shared/interceptors/attach-withcredentials-header.interceptor';
+import { LoginComponent } from './pages/login/screen/login.component';
+import { NetworthComponent } from './pages/networth/screen/networth.component';
 
 @NgModule({
   declarations: [

@@ -10,6 +10,7 @@ import {
   UserUnauthenticatedError,
 } from '../errors/auth.error';
 import moment from 'moment';
+import { UnknownHttpError } from '../errors/generic-http.error';
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +30,7 @@ export class AuthService {
     return Boolean(this._tokenCredentialsInfo);
   }
 
-  public renewToken() {
+  public renewToken(): Observable<string> {
     const url = new URL('auth/renew-token', this.BACKEND_BASE_URL).toString();
     return this.httpService.post<TokenCredentialsInfo>(url, {}).pipe(
       tap((credentials) => this.extractAndSaveTokenCredentials(credentials)),
@@ -61,7 +62,11 @@ export class AuthService {
     const url = new URL('auth/logout', this.BACKEND_BASE_URL).toString();
     return this.httpService.post<void>(url, {}).pipe(
       tap(() => this.clearAccessTokenAndUserId()),
-      tap(() => this.clearRenewTokenTimer())
+      tap(() => this.clearRenewTokenTimer()),
+      catchError((error: HttpErrorResponse) => {
+        console.error('Logout Error', error);
+        return throwError(new UnknownHttpError());
+      })
     );
   }
 
@@ -69,8 +74,8 @@ export class AuthService {
     this.clearAccessTokenAndUserId();
   }
 
-  private extractAndSaveTokenCredentials(crendentials: TokenCredentialsInfo): void {
-    this._tokenCredentialsInfo = crendentials;
+  private extractAndSaveTokenCredentials(credentials: TokenCredentialsInfo): void {
+    this._tokenCredentialsInfo = credentials;
   }
 
   private handleLoginErrorResponse(error: HttpErrorResponse): Observable<never> {

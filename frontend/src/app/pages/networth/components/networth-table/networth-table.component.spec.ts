@@ -1,18 +1,12 @@
-import { CurrencyPipe } from '@angular/common';
+import { APP_BASE_HREF, CurrencyPipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
 import { By } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AppModule } from 'src/app/app.module';
 import {
   networthDisplayViewModelMock,
   selectedCurrencyMock,
   supportedCurrenciesMock,
-} from '../../mocks/networth-display-view-model.mock';
+} from '../../mock/networth-display-view-model.mock';
 import { AssetViewDetails, LiabilityViewDetails } from '../../models/networth-display-view.model';
 import { NetworthTableComponent } from './networth-table.component';
 
@@ -31,17 +25,9 @@ describe('NetworthTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        MatButtonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatTableModule,
-        MatSelectModule,
-        BrowserAnimationsModule,
-        ReactiveFormsModule,
-      ],
-      declarations: [NetworthTableComponent],
-      providers: [CurrencyPipe],
+      imports: [AppModule],
+      declarations: [],
+      providers: [{ provide: APP_BASE_HREF, useValue: '/' }, CurrencyPipe],
     }).compileComponents();
   });
 
