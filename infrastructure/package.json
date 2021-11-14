@@ -31,6 +31,7 @@
     "@aws-cdk/aws-elasticloadbalancingv2": "1.130.0",
     "@aws-cdk/aws-servicediscovery": "1.130.0",
     "@aws-cdk/aws-iam": "1.130.0",
+    "@aws-cdk/aws-certificatemanager": "1.130.0",
     "@aws-cdk/core": "1.130.0",
     "source-map-support": "^0.5.16"
   }

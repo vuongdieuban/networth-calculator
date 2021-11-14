@@ -1,12 +1,13 @@
+import { Certificate } from "@aws-cdk/aws-certificatemanager";
 import { SubnetType, Vpc } from "@aws-cdk/aws-ec2";
 import {
   ContainerImage,
   EnvironmentFile,
   FargateTaskDefinition,
-  LogDriver,
   LogDrivers,
 } from "@aws-cdk/aws-ecs";
 import { ApplicationLoadBalancedFargateService } from "@aws-cdk/aws-ecs-patterns";
+import { ApplicationProtocol } from "@aws-cdk/aws-elasticloadbalancingv2";
 import { PolicyStatement } from "@aws-cdk/aws-iam";
 import * as cdk from "@aws-cdk/core";
 
@@ -33,6 +34,12 @@ export class BackendStack extends cdk.Stack {
   }
 
   private createEcsService(vpc: Vpc) {
+    const certificate = Certificate.fromCertificateArn(
+      this,
+      "Cert",
+      "arn:aws:acm:ca-central-1:355037942502:certificate/ddeb1713-eb0e-491e-8f4a-dc4bda122240"
+    );
+
     const taskDefinition = this.createTaskDefinition();
     const service = new ApplicationLoadBalancedFargateService(this, "DemoAppService", {
       vpc,
@@ -41,6 +48,8 @@ export class BackendStack extends cdk.Stack {
       cpu: 256,
       memoryLimitMiB: 512,
       taskDefinition,
+      protocol: ApplicationProtocol.HTTPS,
+      certificate,
     });
 
     service.targetGroup.configureHealthCheck({
