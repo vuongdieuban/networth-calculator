@@ -7,7 +7,6 @@ import { UnknownHttpError } from 'src/app/shared/auth/errors/generic-http.error'
 import { environment } from 'src/environments/environment';
 import { CalculateNetworthRequest } from '../../dtos/calculate-networth-request.dto';
 import { NetworthViewResponseDto } from '../../dtos/networth-view-response.dto';
-import { UserSelectedCurrency } from '../../dtos/user-selected-currency.dto';
 import { NetworthDisplayViewModel } from '../../models/networth-display-view.model';
 import { NetworthViewAdapterService } from '../view-adapter/networth-view-adapter.service';
 
@@ -21,10 +20,10 @@ export class NetworthService {
     private readonly viewAdapter: NetworthViewAdapterService
   ) {}
 
-  public getUserSelectedCurrency(): Observable<UserSelectedCurrency> {
-    const url = new URL('/currency', this.BACKEND_BASE_URL).toString();
+  public getSupportedCurrencies(): Observable<string[]> {
+    const url = new URL('/networth/supported-currencies', this.BACKEND_BASE_URL).toString();
     return this.httpService
-      .get<UserSelectedCurrency>(url)
+      .get<string[]>(url)
       .pipe(catchError((error: HttpErrorResponse) => this.handleHttpError(error)));
   }
 

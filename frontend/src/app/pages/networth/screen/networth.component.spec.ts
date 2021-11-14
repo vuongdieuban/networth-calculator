@@ -12,7 +12,6 @@ import { NetworthTableComponent } from '../components/networth-table/networth-ta
 import { CalculateNetworthRequest } from '../dtos/calculate-networth-request.dto';
 import {
   networthDisplayViewModelMock,
-  selectedCurrencyMock,
   supportedCurrenciesMock,
 } from '../mock/networth-display-view-model.mock';
 import { NetworthServiceMock } from '../services/networth/mock/networth.service.mock';
@@ -106,18 +105,13 @@ describe('NetworthComponent', () => {
         component.selectedCurrency = '';
       });
 
-      it('should call networthService.getUserSelectedCurrency and store the response data', fakeAsync(() => {
-        const spy = jest.spyOn(networthService, 'getUserSelectedCurrency').mockReturnValue(
-          of({
-            userId: 'abc',
-            selectedCurrency: selectedCurrencyMock,
-            supportedCurrencies: supportedCurrenciesMock,
-          })
-        );
+      it('should call networthService.getSupportedCurrencies and store the response data', fakeAsync(() => {
+        const spy = jest
+          .spyOn(networthService, 'getSupportedCurrencies')
+          .mockReturnValue(of(supportedCurrenciesMock));
         component.ngOnInit();
 
         expect(spy).toHaveBeenCalled();
-        expect(component.selectedCurrency).toBe(selectedCurrencyMock);
         expect(component.supportedCurrencies).toBe(supportedCurrenciesMock);
       }));
 
@@ -134,7 +128,7 @@ describe('NetworthComponent', () => {
       it('should go to login page if networthService throw UserUnauthenticatedError', () => {
         const routerSpy = jest.spyOn(router, 'navigate');
         jest
-          .spyOn(networthService, 'getUserSelectedCurrency')
+          .spyOn(networthService, 'getSupportedCurrencies')
           .mockReturnValue(throwError(new UserUnauthenticatedError()));
 
         component.ngOnInit();
@@ -144,7 +138,7 @@ describe('NetworthComponent', () => {
       it('should go to error page if networthService throw unknown error', () => {
         const routerSpy = jest.spyOn(router, 'navigate');
         jest
-          .spyOn(networthService, 'getUserSelectedCurrency')
+          .spyOn(networthService, 'getSupportedCurrencies')
           .mockReturnValue(throwError(new Error()));
 
         component.ngOnInit();

@@ -4,7 +4,6 @@ import { switchMap, tap } from 'rxjs/operators';
 import { UserUnauthenticatedError } from 'src/app/shared/auth/errors/auth.error';
 import { AuthService } from 'src/app/shared/auth/service/auth.service';
 import { CalculateNetworthRequest } from '../dtos/calculate-networth-request.dto';
-import { UserSelectedCurrency } from '../dtos/user-selected-currency.dto';
 import { NetworthDisplayViewModel } from '../models/networth-display-view.model';
 import { NetworthService } from '../services/networth/networth.service';
 
@@ -44,9 +43,9 @@ export class NetworthComponent implements OnInit {
 
   private getCurrencyAndNetworthData() {
     this.networthService
-      .getUserSelectedCurrency()
+      .getSupportedCurrencies()
       .pipe(
-        tap((selectedCurrency) => this.extractAndSaveSelectedCurrency(selectedCurrency)),
+        tap((selectedCurrency) => this.extractAndSaveSupportedCurrencies(selectedCurrency)),
         switchMap(() => this.networthService.getOrCreateNetworthProfile())
       )
       .subscribe(
@@ -55,13 +54,13 @@ export class NetworthComponent implements OnInit {
       );
   }
 
-  private extractAndSaveSelectedCurrency(selectedCurrency: UserSelectedCurrency) {
-    this.supportedCurrencies = selectedCurrency.supportedCurrencies;
-    this.selectedCurrency = selectedCurrency.selectedCurrency;
+  private extractAndSaveSupportedCurrencies(supportedCurrencies: string[]) {
+    this.supportedCurrencies = supportedCurrencies;
   }
 
   private extractAndSaveNetworthProfile(profile: NetworthDisplayViewModel) {
     this.networthViewData = profile;
+    this.selectedCurrency = profile.selectedCurrency;
   }
 
   private handleHttpError(error: Error) {
