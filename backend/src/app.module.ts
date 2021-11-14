@@ -28,11 +28,12 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ViewAdapterService } from './networth/services/view-adapter/view-adapter.service';
 import { SelectedCurrencyService } from './networth/services/selected-currency/selected-currency.service';
 import { NetworthController } from './networth/controllers/networth.controller';
+import { ormconfig } from './db-config/ormconfig';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
-    TypeOrmModule.forRoot(),
+    TypeOrmModule.forRoot(ormconfig),
     TypeOrmModule.forFeature([
       UserEntity,
       RefreshTokenEntity,

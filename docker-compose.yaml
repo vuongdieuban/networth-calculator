@@ -1,10 +1,6 @@
 version: "3.7"
 
 services:
-  # NOTE: "db" is this postgres service name, "db" should be use as "host" when trying to connect to postgres in NestJs Typeorm
-  # config:TypeOrmModuleOptions = {
-  #   host: 'db',
-  # }
   db:
     image: postgres:14
     environment:
@@ -12,4 +8,20 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
+      - 5432:5432
+
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    ports:
+      - 4200:4200
+
+  backend:
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    env_file:
+      - dev.env
