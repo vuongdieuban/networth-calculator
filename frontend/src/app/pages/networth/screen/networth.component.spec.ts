@@ -9,6 +9,7 @@ import { UnknownHttpError } from 'src/app/shared/auth/errors/generic-http.error'
 import { AuthService } from 'src/app/shared/auth/service/auth.service';
 import { AuthServiceMock } from 'src/app/shared/auth/service/mock/auth.service.mock';
 import { NetworthTableComponent } from '../components/networth-table/networth-table.component';
+import { CalculateNetworthRequest } from '../dtos/calculate-networth-request.dto';
 import {
   networthDisplayViewModelMock,
   selectedCurrencyMock,
@@ -98,53 +99,81 @@ describe('NetworthComponent', () => {
       }));
     });
 
-    describe('NetworthService functionality', () => {
-      describe('On component init', () => {
-        it('should call networthService.getUserSelectedCurrency and store the response data', fakeAsync(() => {
-          const spy = jest.spyOn(networthService, 'getUserSelectedCurrency').mockReturnValue(
-            of({
-              userId: 'abc',
-              selectedCurrency: selectedCurrencyMock,
-              supportedCurrencies: supportedCurrenciesMock,
-            })
-          );
-          component.ngOnInit();
-
-          expect(spy).toHaveBeenCalled();
-          expect(component.selectedCurrency).toBe(selectedCurrencyMock);
-          expect(component.supportedCurrencies).toBe(supportedCurrenciesMock);
-        }));
-
-        it('should call networthService.getOrCreateNetworthProfile and store the response data', fakeAsync(() => {
-          const spy = jest
-            .spyOn(networthService, 'getOrCreateNetworthProfile')
-            .mockReturnValue(of(networthDisplayViewModelMock));
-
-          component.ngOnInit();
-          expect(spy).toHaveBeenCalled();
-          expect(component.networthViewData).toBe(networthDisplayViewModelMock);
-        }));
-
-        it('should go to login page if networthService throw UserUnauthenticatedError', () => {
-          const routerSpy = jest.spyOn(router, 'navigate');
-          jest
-            .spyOn(networthService, 'getUserSelectedCurrency')
-            .mockReturnValue(throwError(new UserUnauthenticatedError()));
-
-          component.ngOnInit();
-          expect(routerSpy).toHaveBeenCalledWith(['login']);
-        });
-
-        it('should go to error page if networthService throw unknown error', () => {
-          const routerSpy = jest.spyOn(router, 'navigate');
-          jest
-            .spyOn(networthService, 'getUserSelectedCurrency')
-            .mockReturnValue(throwError(new Error()));
-
-          component.ngOnInit();
-          expect(routerSpy).toHaveBeenCalledWith(['error']);
-        });
+    describe('On component init', () => {
+      beforeEach(() => {
+        component.networthViewData = undefined;
+        component.supportedCurrencies = [];
+        component.selectedCurrency = '';
       });
+
+      it('should call networthService.getUserSelectedCurrency and store the response data', fakeAsync(() => {
+        const spy = jest.spyOn(networthService, 'getUserSelectedCurrency').mockReturnValue(
+          of({
+            userId: 'abc',
+            selectedCurrency: selectedCurrencyMock,
+            supportedCurrencies: supportedCurrenciesMock,
+          })
+        );
+        component.ngOnInit();
+
+        expect(spy).toHaveBeenCalled();
+        expect(component.selectedCurrency).toBe(selectedCurrencyMock);
+        expect(component.supportedCurrencies).toBe(supportedCurrenciesMock);
+      }));
+
+      it('should call networthService.getOrCreateNetworthProfile and store the response data', fakeAsync(() => {
+        const spy = jest
+          .spyOn(networthService, 'getOrCreateNetworthProfile')
+          .mockReturnValue(of(networthDisplayViewModelMock));
+
+        component.ngOnInit();
+        expect(spy).toHaveBeenCalled();
+        expect(component.networthViewData).toBe(networthDisplayViewModelMock);
+      }));
+
+      it('should go to login page if networthService throw UserUnauthenticatedError', () => {
+        const routerSpy = jest.spyOn(router, 'navigate');
+        jest
+          .spyOn(networthService, 'getUserSelectedCurrency')
+          .mockReturnValue(throwError(new UserUnauthenticatedError()));
+
+        component.ngOnInit();
+        expect(routerSpy).toHaveBeenCalledWith(['login']);
+      });
+
+      it('should go to error page if networthService throw unknown error', () => {
+        const routerSpy = jest.spyOn(router, 'navigate');
+        jest
+          .spyOn(networthService, 'getUserSelectedCurrency')
+          .mockReturnValue(throwError(new Error()));
+
+        component.ngOnInit();
+        expect(routerSpy).toHaveBeenCalledWith(['error']);
+      });
+    });
+
+    describe('On networth calculate request submitted', () => {
+      beforeEach(() => {
+        component.networthViewData = undefined;
+      });
+
+      it('should call networthSerivce.calculateNetworthProfile with the calculateRequest', fakeAsync(() => {
+        const mockCaculateRequest = {} as CalculateNetworthRequest;
+        const spy = jest.spyOn(networthService, 'calculateNetworthProfile');
+
+        component.handleCalculateNetworthSubmitted(mockCaculateRequest);
+        expect(spy).toHaveBeenCalledWith(mockCaculateRequest);
+      }));
+
+      it('should store calculate response into component.networthViewData', fakeAsync(() => {
+        const mockCaculateRequest = {} as CalculateNetworthRequest;
+        jest
+          .spyOn(networthService, 'calculateNetworthProfile')
+          .mockReturnValue(of(networthDisplayViewModelMock));
+
+        component.handleCalculateNetworthSubmitted(mockCaculateRequest);
+        expect(component.networthViewData).toBe(networthDisplayViewModelMock);
+      }));
     });
   });
 });
