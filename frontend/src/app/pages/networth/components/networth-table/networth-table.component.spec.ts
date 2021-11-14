@@ -8,8 +8,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { exec } from 'child_process';
-import { assert } from 'console';
 import {
   networthDisplayViewModelMock,
   selectedCurrencyMock,
