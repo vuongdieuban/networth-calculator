@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserSelectedCurrencyEntity } from 'src/currency/entities/user-selected-currency.entity';
-import { CurrencyType } from 'src/currency/constants/currency-type.enum';
+import { UserSelectedCurrencyEntity } from 'src/networth/entities/user-selected-currency.entity';
+import { CurrencyType } from 'src/shared/constants/currency-type.enum';
 import { Repository } from 'typeorm';
 
 @Injectable()

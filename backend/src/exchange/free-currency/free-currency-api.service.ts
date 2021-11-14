@@ -1,6 +1,6 @@
 import { ExchangeService } from '../exchange.service';
 import { lastValueFrom, map, take } from 'rxjs';
-import { CurrencyType } from 'src/currency/constants/currency-type.enum';
+import { CurrencyType } from 'src/shared/constants/currency-type.enum';
 import { HttpService } from '@nestjs/axios';
 
 export class FreeCurrencyApiRatesProvider extends ExchangeService {

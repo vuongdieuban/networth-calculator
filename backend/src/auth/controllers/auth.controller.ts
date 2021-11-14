@@ -1,9 +1,9 @@
 import { Body, Controller, Post, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CookieOptions, Request, Response } from 'express';
-import { AuthService } from './services/auth.service';
-import { RegisterRequestDto, RegisterResponseDto } from './dto/register';
-import { ValidatedUser } from './interfaces/validated-user';
+import { AuthService } from '../services/auth.service';
+import { RegisterRequestDto, RegisterResponseDto } from '../dto/register';
+import { ValidatedUser } from '../interfaces/validated-user';
 import { UserService } from 'src/user/services/user.service';
 
 @Controller('auth')

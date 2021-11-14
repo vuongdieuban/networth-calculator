@@ -1,5 +1,5 @@
 import { AbstractEntity } from 'src/shared/entities/abstract.entity';
-import { CurrencyType } from 'src/currency/constants/currency-type.enum';
+import { CurrencyType } from 'src/shared/constants/currency-type.enum';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { Column, Entity, JoinColumn, OneToOne, Unique } from 'typeorm';
 

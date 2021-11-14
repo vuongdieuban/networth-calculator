@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression, Timeout } from '@nestjs/schedule';
-import { ExchangeService } from 'src/currency/services/exchange/exchange.service';
+import { ExchangeService } from 'src/exchange/exchange.service';
 
 @Injectable()
 export class TasksSchedulingService {

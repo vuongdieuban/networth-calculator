@@ -2,10 +2,10 @@ import { Body, Controller, Get, NotFoundException, Post, Req, UseGuards } from '
 import { Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ValidatedUser } from 'src/auth/interfaces/validated-user';
-import { CalculateNetworthRequestDto } from './dtos/calculate-networth-request.dto';
-import { NetworthViewResponseDto } from './dtos/networth-view-response';
-import { NetworthService } from './services/networth/networth.service';
-import { ViewAdapterService } from './services/view-adapter/view-adapter.service';
+import { CalculateNetworthRequestDto } from '../dtos/calculate-networth-request.dto';
+import { NetworthViewResponseDto } from '../dtos/networth-view-response';
+import { NetworthService } from '../services/networth/networth.service';
+import { ViewAdapterService } from '../services/view-adapter/view-adapter.service';
 
 // Auth Guard will protect these endpoints and validate the token
 // If valid it will reach here and also has injected req.user into Request object
