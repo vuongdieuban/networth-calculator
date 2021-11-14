@@ -28,10 +28,10 @@ export class NetworthService {
   }
 
   public getOrCreateNetworthProfile(): Observable<NetworthDisplayViewModel> {
-    const url = new URL('/networth', this.BACKEND_BASE_URL).toString();
-    return this.httpService.get<NetworthViewResponseDto>(url).pipe(
-      map((response) => this.viewAdapter.convertNetworthApiResponseToViewModel(response)),
-      catchError((error: HttpErrorResponse) => this.handleHttpError(error))
+    return this.getNetworthProfile().pipe(
+      catchError((error: HttpErrorResponse) => this.handleProfileNotFoundError(error)),
+      catchError((error: HttpErrorResponse) => this.handleHttpError(error)),
+      map((response) => this.viewAdapter.convertNetworthApiResponseToViewModel(response))
     );
   }
 
@@ -43,6 +43,23 @@ export class NetworthService {
       map((response) => this.viewAdapter.convertNetworthApiResponseToViewModel(response)),
       catchError((error: HttpErrorResponse) => this.handleHttpError(error))
     );
+  }
+
+  private getNetworthProfile(): Observable<NetworthViewResponseDto> {
+    const url = new URL('/networth', this.BACKEND_BASE_URL).toString();
+    return this.httpService.get<NetworthViewResponseDto>(url);
+  }
+
+  private createNetworthProfile(): Observable<NetworthViewResponseDto> {
+    const url = new URL('/networth', this.BACKEND_BASE_URL).toString();
+    return this.httpService.post<NetworthViewResponseDto>(url, {});
+  }
+
+  private handleProfileNotFoundError(error: HttpErrorResponse) {
+    if (error.status === 404) {
+      return this.createNetworthProfile();
+    }
+    return throwError(error);
   }
 
   private handleHttpError(error: HttpErrorResponse) {
