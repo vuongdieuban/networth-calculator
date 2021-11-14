@@ -15,16 +15,6 @@ export class SelectedCurrencyService {
     return Object.values(CurrencyType);
   }
 
-  public async getOrCreateUserSelectedCurrency(
-    userId: string,
-  ): Promise<UserSelectedCurrencyEntity> {
-    const selectedCurrency = await this.getUserSelectedCurrency(userId);
-    if (!selectedCurrency) {
-      return this.createSelectedCurrencyProfile(userId);
-    }
-    return selectedCurrency;
-  }
-
   public async getUserSelectedCurrency(
     userId: string,
   ): Promise<UserSelectedCurrencyEntity | undefined> {

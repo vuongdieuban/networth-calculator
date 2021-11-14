@@ -2,9 +2,11 @@ import { Body, Controller, Get, NotFoundException, Post, Req, UseGuards } from '
 import { Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ValidatedUser } from 'src/auth/interfaces/validated-user';
+import { CurrencyType } from 'src/shared/constants/currency-type.enum';
 import { CalculateNetworthRequestDto } from '../dtos/calculate-networth-request.dto';
 import { NetworthViewResponseDto } from '../dtos/networth-view-response';
 import { NetworthService } from '../services/networth/networth.service';
+import { SelectedCurrencyService } from '../services/selected-currency/selected-currency.service';
 import { ViewAdapterService } from '../services/view-adapter/view-adapter.service';
 
 // Auth Guard will protect these endpoints and validate the token
@@ -18,13 +20,12 @@ export class NetworthController {
   constructor(
     private readonly networthService: NetworthService,
     private readonly viewAdapter: ViewAdapterService,
+    private readonly currencyService: SelectedCurrencyService,
   ) {}
 
-  @Get('/')
-  public async getOrCreateNetworthProfile(@Req() req: Request): Promise<NetworthViewResponseDto> {
-    const userId = this.extractUserIdFromRequest(req);
-    const profile = await this.networthService.getOrCreateNetworthProfile(userId);
-    return this.viewAdapter.formatNetworthProfileToViewResponse(profile);
+  @Get('/supported-currencies')
+  public async getAllSupportedCurrencies(): Promise<CurrencyType[]> {
+    return this.currencyService.getAllSupportedCurrencies();
   }
 
   @Post('/calculate')
@@ -46,5 +47,22 @@ export class NetworthController {
   private extractUserIdFromRequest(req: Request) {
     const user = req.user as ValidatedUser;
     return user.userId;
+  }
+
+  @Get('/')
+  public async getNetworthProfile(@Req() req: Request): Promise<NetworthViewResponseDto> {
+    const userId = this.extractUserIdFromRequest(req);
+    const profile = await this.networthService.getNetworthProfile(userId);
+    if (!profile) {
+      throw new NotFoundException(this.missingProfileErrorMsg);
+    }
+    return this.viewAdapter.formatNetworthProfileToViewResponse(profile);
+  }
+
+  @Post('/')
+  public async createNetworthProfile(@Req() req: Request): Promise<NetworthViewResponseDto> {
+    const userId = this.extractUserIdFromRequest(req);
+    const profile = await this.networthService.createInitialNetworthProfile(userId);
+    return this.viewAdapter.formatNetworthProfileToViewResponse(profile);
   }
 }
