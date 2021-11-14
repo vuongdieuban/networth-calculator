@@ -19,7 +19,10 @@ export class FreeCurrencyApiRatesProvider extends ExchangeService {
     const ratesCache: Record<string, Record<string, number>> = {};
 
     const ratesPromises = this.fetchRatesFromProvider();
-    const parsedRatesResponse = await Promise.all(ratesPromises);
+    const parsedRatesResponse = await Promise.all(ratesPromises).catch((error) => {
+      console.log('ERROR while fetching rates', error);
+      throw error;
+    });
 
     parsedRatesResponse.forEach(({ currency, parsedRates }) => {
       ratesCache[currency] = parsedRates;
@@ -51,7 +54,6 @@ export class FreeCurrencyApiRatesProvider extends ExchangeService {
     const parsedRates: Record<string, number> = {
       [currency]: 1,
     };
-
     for (const [key, value] of Object.entries(rawRatesResponse)) {
       if (this.supportedCurrencies.includes(key)) {
         parsedRates[key] = value;

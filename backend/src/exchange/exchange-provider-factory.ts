@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { FreeCurrencyApiRatesProvider } from './free-currency/free-currency-api.service';
+import { FreeCurrencyApiRatesProvider } from './third-party-provider/free-currency-api.service';
 import { LocalRatesProvider } from './local/local-rates.service';
 
 export function exchangeProviderFactory(httpService: HttpService) {
