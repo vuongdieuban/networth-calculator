@@ -1,4 +1,14 @@
-import { Body, Controller, Post, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  ConflictException,
+  Controller,
+  Post,
+  Req,
+  Res,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CookieOptions, Request, Response } from 'express';
 import { AuthService } from '../services/auth.service';
@@ -15,10 +25,14 @@ export class AuthController {
   ) {}
 
   @Post('/register')
-  public async signup(@Body() payload: RegisterRequestDto): Promise<RegisterResponseDto> {
+  public async register(@Body() payload: RegisterRequestDto): Promise<RegisterResponseDto> {
     const { username, password } = payload;
-    const user = await this.userService.getOrCreateUser(username, password);
-    return { userId: user.id };
+    const user = await this.userService.getUserByUserName(username);
+    if (user) {
+      throw new ConflictException('User already exist');
+    }
+    const newUser = await this.userService.createUser(username, password);
+    return { userId: newUser.id };
   }
 
   @UseGuards(AuthGuard('local'))

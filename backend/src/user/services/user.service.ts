@@ -12,14 +12,6 @@ export class UserService {
     private readonly hashingService: HashingService,
   ) {}
 
-  public async getOrCreateUser(username: string, password: string): Promise<UserEntity> {
-    const user = await this.getUserByUserName(username);
-    if (!user) {
-      return this.createUser(username, password);
-    }
-    return user;
-  }
-
   public async getUserByUserName(username: string): Promise<UserEntity | undefined> {
     return this.userRepository.findOne({
       username,
