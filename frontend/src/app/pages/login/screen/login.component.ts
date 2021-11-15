@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
-import { UserNotFoundError, UserUnauthenticatedError } from 'src/app/shared/auth/errors/auth.error';
+import {
+  RegisterExistedUserError,
+  UserNotFoundError,
+  UserUnauthenticatedError,
+} from 'src/app/shared/auth/errors/auth.error';
 import { AuthService } from 'src/app/shared/auth/service/auth.service';
 import { UserCredentialsInput } from '../models/user-credentials-input.model';
 
@@ -33,7 +37,7 @@ export class LoginComponent implements OnInit {
       .pipe(switchMap(() => this.authService.login(username, password)))
       .subscribe(
         () => this.router.navigate(['/networth']),
-        () => this.router.navigate(['/error'])
+        (error) => this.handleRegisterError(error)
       );
   }
 
@@ -54,6 +58,14 @@ export class LoginComponent implements OnInit {
 
     if (error instanceof UserNotFoundError) {
       this.errorMsg = `User with username ${username} not found. Please register account first`;
+      return;
+    }
+    this.router.navigate(['/error']);
+  }
+
+  private handleRegisterError(error: Error) {
+    if (error instanceof RegisterExistedUserError) {
+      this.errorMsg = 'Cannot register existed user';
       return;
     }
     this.router.navigate(['/error']);

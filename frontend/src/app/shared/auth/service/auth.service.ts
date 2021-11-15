@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { TokenCredentialsInfo } from '../dtos/token-credentials-info.dto';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import {
+  RegisterExistedUserError,
   UnknownAuthenticationError,
   UserNotFoundError,
   UserUnauthenticatedError,
@@ -99,6 +100,10 @@ export class AuthService {
   }
 
   private handleRegisterErrorResponse(error: HttpErrorResponse): Observable<never> {
+    if (error.status === 409) {
+      return throwError(new RegisterExistedUserError());
+    }
+
     console.error('RegisterError', error);
     return throwError(new UnknownAuthenticationError(error.message));
   }
