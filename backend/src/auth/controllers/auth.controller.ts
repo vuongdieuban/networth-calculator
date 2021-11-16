@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   ConflictException,
   Controller,
@@ -100,10 +99,9 @@ export class AuthController {
   }
 
   private getCookieOptions(): CookieOptions {
-    const localEnv = process.env.NODE_ENV === 'development';
     return {
       sameSite: 'lax',
-      secure: !localEnv,
+      secure: true,
       httpOnly: true,
       maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day,
     };
