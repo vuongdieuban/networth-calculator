@@ -1,4 +1,9 @@
 import { join } from 'path';
+import { RefreshTokenEntity } from 'src/auth/entities/refresh-token.entity';
+import { AssetEntity } from 'src/networth/entities/asset.entity';
+import { LiabilityEntity } from 'src/networth/entities/liability.entity';
+import { UserSelectedCurrencyEntity } from 'src/networth/entities/user-selected-currency.entity';
+import { UserEntity } from 'src/user/entities/user.entity';
 import { ConnectionOptions } from 'typeorm';
 
 export const ormconfig: ConnectionOptions = {
@@ -8,7 +13,13 @@ export const ormconfig: ConnectionOptions = {
   username: 'postgres',
   password: 'postgres',
   database: 'demo',
-  entities: [join(__dirname, '**', '*.entity.{ts,js}'), './dist/**/*.entity.{ts,js}'],
+  entities: [
+    UserEntity,
+    RefreshTokenEntity,
+    AssetEntity,
+    LiabilityEntity,
+    UserSelectedCurrencyEntity,
+  ],
 
   migrationsTableName: 'migration',
   migrations: ['dist/migrations/*.js'],
