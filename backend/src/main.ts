@@ -9,13 +9,17 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe());
+
   app.use(cookieParser());
   app.enableCors({
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
-    origin: ['http://localhost:4200', 'https://*.cloudfront.net', 'https://*.banvuong.ca'],
+    origin: ['http://localhost:4200', 'https://demo.banvuong.ca'],
     optionsSuccessStatus: 200,
   });
+  console.log('--ORIGINS--- https://demo.banvuong.ca');
+
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(3000);
 }
