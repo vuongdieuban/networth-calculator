@@ -11,11 +11,13 @@ import { RefreshTokenEntity } from 'src/auth/entities/refresh-token.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { MockType } from 'src/shared/utils/test-utils';
 import { Repository } from 'typeorm';
+import { HashingService } from 'src/shared/services/hashing/hashing.service';
 
 describe('Transaction E2E test', () => {
   let app: INestApplication;
   let userRepo: MockType<Repository<UserEntity>>;
   let refreshTokenRepo: MockType<Repository<RefreshTokenEntity>>;
+  let hashingService: HashingService;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -28,6 +30,7 @@ describe('Transaction E2E test', () => {
 
     userRepo = moduleRef.get(getRepositoryToken(UserEntity));
     refreshTokenRepo = moduleRef.get(getRepositoryToken(RefreshTokenEntity));
+    hashingService = moduleRef.get<HashingService>(HashingService);
 
     await app.init();
   });
@@ -84,7 +87,55 @@ describe('Transaction E2E test', () => {
       });
     });
 
-    describe('Login Workflow', () => {});
+    describe('Login Workflow', () => {
+      const url = '/auth/login';
+      const refreshTokenId = 'def456';
+      const userId = 'abc123';
+      const password = 'yeet';
+      const username = 'yote';
+      let hashedPassword = '';
+
+      beforeEach(async () => {
+        hashedPassword = await hashingService.hashPassword(password);
+      });
+
+      it('should throw 401 Unauthenticated if the input password does not match stored db password', async () => {
+        jest
+          .spyOn(userRepo, 'findOne')
+          .mockImplementation(async () => ({ username, hashedPassword }));
+
+        const response = await request(app.getHttpServer()).post(url).send({
+          username,
+          password: 'invalidPassword',
+        });
+
+        expect(response.statusCode).toBe(401);
+      });
+
+      it('should set cookie and return token credentials data if login success', async () => {
+        jest.spyOn(userRepo, 'findOne').mockImplementation(async () => ({
+          username,
+          hashedPassword,
+          id: userId,
+        }));
+
+        jest
+          .spyOn(refreshTokenRepo, 'save')
+          .mockImplementation(async () => ({ id: refreshTokenId }));
+
+        const response = await request(app.getHttpServer()).post(url).send({
+          username,
+          password,
+        });
+
+        expect(response.statusCode).toBe(201);
+        expect(response.body.userId).toBe(userId);
+
+        const responseCookie = response.headers['set-cookie'][0].split('=');
+        expect(responseCookie[0]).toBe('demo-refresh-token');
+        expect(responseCookie[1]).toBeDefined();
+      });
+    });
   });
 
   afterAll(async () => {

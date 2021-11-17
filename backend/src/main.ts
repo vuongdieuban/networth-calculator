@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-dotenv.config();
+dotenv.config({ path: './dev.env' });
 
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
@@ -18,7 +18,6 @@ async function bootstrap() {
     origin: ['http://localhost:4200', 'https://demo.banvuong.ca'],
     optionsSuccessStatus: 200,
   });
-  console.log('--ORIGINS--- https://demo.banvuong.ca');
 
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(3000);

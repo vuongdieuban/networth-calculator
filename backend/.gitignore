@@ -1,5 +1,6 @@
 
 # compiled output
+*.env
 ormconfig.json
 /dist
 /node_modules
