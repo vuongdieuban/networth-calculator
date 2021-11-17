@@ -22,12 +22,12 @@ export const ormconfig: ConnectionOptions = {
   ],
 
   migrationsTableName: 'migration',
-  migrations: ['dist/migrations/*.js'],
+  migrations: ['dist/src/migrations/*.js'],
   cli: {
     migrationsDir: 'src/migrations',
   },
   synchronize: false,
   dropSchema: false,
   migrationsRun: true,
-  logging: ['schema', 'query', 'error'],
+  logging: false,
 };
