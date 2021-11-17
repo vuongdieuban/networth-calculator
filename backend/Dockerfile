@@ -14,4 +14,4 @@ RUN npm run build
 
 EXPOSE 3000
 EXPOSE 9229
-CMD [ "node", "dist/main.js" ]
+CMD [ "node", "dist/src/main.js" ]
